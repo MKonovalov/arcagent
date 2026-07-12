@@ -14,10 +14,10 @@
 //!   ANTHROPIC_API_KEY=sk-... cargo run --example shared_state
 
 use std::sync::Arc;
-use yoagent::provider::{AnthropicProvider, ModelConfig, StreamProvider};
-use yoagent::shared_state::SharedState;
-use yoagent::sub_agent::SubAgentTool;
-use yoagent::*;
+use arcgent::provider::{AnthropicProvider, ModelConfig, StreamProvider};
+use arcgent::shared_state::SharedState;
+use arcgent::sub_agent::SubAgentTool;
+use arcgent::*;
 
 #[tokio::main]
 async fn main() {

@@ -9,9 +9,9 @@ use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
 use tracing::instrument::WithSubscriber;
 use tracing_subscriber::layer::SubscriberExt;
-use yoagent::provider::mock::*;
-use yoagent::provider::MockProvider;
-use yoagent::*;
+use arcgent::provider::mock::*;
+use arcgent::provider::MockProvider;
+use arcgent::*;
 
 /// Layer that records every new span's name.
 struct SpanCollector(Arc<Mutex<Vec<String>>>);
@@ -61,8 +61,8 @@ impl AgentTool for EchoTool {
     }
 }
 
-fn loop_config(provider: MockProvider) -> yoagent::agent_loop::AgentLoopConfig {
-    yoagent::agent_loop::AgentLoopConfig {
+fn loop_config(provider: MockProvider) -> arcgent::agent_loop::AgentLoopConfig {
+    arcgent::agent_loop::AgentLoopConfig {
         provider: std::sync::Arc::new(provider),
         model: "mock".into(),
         api_key: "test".into(),
@@ -81,7 +81,7 @@ fn loop_config(provider: MockProvider) -> yoagent::agent_loop::AgentLoopConfig {
         tool_execution: ToolExecutionStrategy::default(),
         tool_middleware: vec![],
         output_schema: None,
-        retry_config: yoagent::RetryConfig::none(),
+        retry_config: arcgent::RetryConfig::none(),
         before_turn: None,
         after_turn: None,
         on_error: None,
@@ -208,13 +208,13 @@ where
 struct UsageProvider;
 
 #[async_trait::async_trait]
-impl yoagent::provider::StreamProvider for UsageProvider {
+impl arcgent::provider::StreamProvider for UsageProvider {
     async fn stream(
         &self,
-        _config: yoagent::provider::StreamConfig,
-        tx: mpsc::UnboundedSender<yoagent::provider::StreamEvent>,
+        _config: arcgent::provider::StreamConfig,
+        tx: mpsc::UnboundedSender<arcgent::provider::StreamEvent>,
         _cancel: CancellationToken,
-    ) -> Result<Message, yoagent::provider::ProviderError> {
+    ) -> Result<Message, arcgent::provider::ProviderError> {
         let msg = Message::assistant(
             vec![Content::Text { text: "ok".into() }],
             StopReason::Stop,
@@ -228,7 +228,7 @@ impl yoagent::provider::StreamProvider for UsageProvider {
                 total_tokens: 1_500_007,
             },
         );
-        let _ = tx.send(yoagent::provider::StreamEvent::Done {
+        let _ = tx.send(arcgent::provider::StreamEvent::Done {
             message: msg.clone(),
         });
         Ok(msg)
@@ -246,7 +246,7 @@ async fn llm_stream_records_tokens_and_cost() {
 
     let mut config = loop_config(MockProvider::text("unused"));
     config.provider = std::sync::Arc::new(UsageProvider);
-    let mut mc = yoagent::provider::ModelConfig::mock();
+    let mut mc = arcgent::provider::ModelConfig::mock();
     mc.cost.input_per_million = 3.0;
     mc.cost.output_per_million = 15.0;
     config.model_config = Some(mc);

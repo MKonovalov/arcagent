@@ -2,12 +2,12 @@
 
 use std::sync::Arc;
 use tokio_util::sync::CancellationToken;
-use yoagent::provider::mock::*;
-use yoagent::provider::MockProvider;
-use yoagent::provider::ModelConfig;
-use yoagent::shared_state::SharedState;
-use yoagent::sub_agent::SubAgentTool;
-use yoagent::*;
+use arcgent::provider::mock::*;
+use arcgent::provider::MockProvider;
+use arcgent::provider::ModelConfig;
+use arcgent::shared_state::SharedState;
+use arcgent::sub_agent::SubAgentTool;
+use arcgent::*;
 
 // ---------------------------------------------------------------------------
 // Integration: parent stores a value, sub-agent reads it via shared_state tool

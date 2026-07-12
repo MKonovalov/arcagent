@@ -1,24 +1,24 @@
 # GASP: Your Agent Is a Git Repo
 
-[GASP](https://github.com/yologdev/gasp) — the Git Agent State Protocol —
+[GASP](https://github.com/MKonovalov/gasp) — the Git Agent State Protocol —
 keeps an agent's durable self in a git repository: an **append-only semantic
 event log** (`state/events.jsonl`) that folds into a typed
 goal/run/model/tool graph, alongside identity, skills, and memory tiers.
 Restore = `git clone` + replay. Clone your agent onto a new machine and it
 remembers everything, with lineage.
 
-yoagent bridges to GASP through the `gasp` feature (backed by
-[`yoagent-state`](https://crates.io/crates/yoagent-state), the reference
+arcgent bridges to GASP through the `gasp` feature (backed by
+[`arcgent-state`](https://crates.io/crates/arcgent-state), the reference
 runtime). The bridge is a consumer of the [`AgentEvent`] stream — **zero
 agent-loop changes**:
 
 ```toml
-yoagent = { version = "0.12", features = ["gasp"] }
+arcgent = { version = "0.12", features = ["gasp"] }
 ```
 
 
 ```rust
-use yoagent::gasp::{GaspRecorder, GoalRef};
+use arcgent::gasp::{GaspRecorder, GoalRef};
 
 let recorder = GaspRecorder::init(
     "./my-agent-repo", "my-agent", "worker-1",
@@ -60,16 +60,16 @@ live workers, and record one run at a time.
 
 ## Tested conformance
 
-yoagent's CI emits an agent repo with a mock provider and runs the GASP
+arcgent's CI emits an agent repo with a mock provider and runs the GASP
 conformance checker against it — all seven mechanical checks (envelope
 round-trip, replay, vocabulary, append-only git history, causation integrity,
 restore, domain↔ops consistency) must pass on every commit. Try it yourself:
 
 ```bash
 cargo run --example gasp_emit --features gasp -- /tmp/my-agent
-git clone https://github.com/yologdev/gasp && cd gasp/conformance-check
+git clone https://github.com/MKonovalov/gasp && cd gasp/conformance-check
 cargo run -q -- /tmp/my-agent
 # conformant: all checks passed
 ```
 
-[`AgentEvent`]: https://docs.rs/yoagent/latest/yoagent/enum.AgentEvent.html
+[`AgentEvent`]: https://docs.rs/arcgent/latest/arcgent/enum.AgentEvent.html

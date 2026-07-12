@@ -3,10 +3,10 @@
 
 use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
-use yoagent::agent_loop::{agent_loop, AgentLoopConfig};
-use yoagent::provider::{GoogleProvider, ModelConfig};
-use yoagent::tools;
-use yoagent::types::*;
+use arcgent::agent_loop::{agent_loop, AgentLoopConfig};
+use arcgent::provider::{GoogleProvider, ModelConfig};
+use arcgent::tools;
+use arcgent::types::*;
 
 fn api_key() -> String {
     std::env::var("GEMINI_API_KEY").expect("GEMINI_API_KEY must be set")
@@ -35,7 +35,7 @@ fn make_config(model: &str) -> AgentLoopConfig {
         },
         output_schema: None,
         tool_execution: ToolExecutionStrategy::default(),
-        retry_config: yoagent::RetryConfig::default(),
+        retry_config: arcgent::RetryConfig::default(),
         before_turn: None,
         after_turn: None,
         on_error: None,

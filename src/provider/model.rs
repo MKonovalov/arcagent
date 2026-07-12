@@ -558,7 +558,7 @@ impl ModelConfig {
     ///   (pair with `OpenAiCompatProvider`)
     ///
     /// Gemini models are not supported — Zen serves them over a Google-native
-    /// endpoint shape yoagent does not target. A `gemini-*` id falls through to
+    /// endpoint shape arcgent does not target. A `gemini-*` id falls through to
     /// Chat Completions (with a warning) and will likely fail at request time.
     ///
     /// The routing mirrors the Zen endpoint tables as of mid-2026; if a model
@@ -586,7 +586,7 @@ impl ModelConfig {
         let lower = id.to_ascii_lowercase();
         if lower.starts_with("gemini-") {
             tracing::warn!(
-                "OpenCode serves Gemini models over a Google-native endpoint yoagent \
+                "OpenCode serves Gemini models over a Google-native endpoint arcgent \
                  does not target; '{}' is routed to /chat/completions and will likely \
                  fail at request time",
                 id

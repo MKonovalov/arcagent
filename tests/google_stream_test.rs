@@ -9,8 +9,8 @@ use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, MockServer, ResponseTemplate};
-use yoagent::provider::{GoogleProvider, ModelConfig, StreamConfig, StreamProvider};
-use yoagent::types::*;
+use arcgent::provider::{GoogleProvider, ModelConfig, StreamConfig, StreamProvider};
+use arcgent::types::*;
 
 const MODEL: &str = "gemini-2.5-flash";
 
@@ -259,7 +259,7 @@ async fn in_stream_error_payload_fails_the_stream() {
         .await;
 
     let (tx, _rx) = tokio::sync::mpsc::unbounded_channel();
-    let result = yoagent::provider::GoogleProvider
+    let result = arcgent::provider::GoogleProvider
         .stream(
             stream_config(&server.uri(), vec![Message::user("hi")]),
             tx,

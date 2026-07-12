@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to `yoagent` are documented here. The format loosely
+All notable changes to `arcgent` are documented here. The format loosely
 follows [Keep a Changelog](https://keepachangelog.com/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
@@ -17,14 +17,14 @@ adheres to [Semantic Versioning](https://semver.org/).
   available in the CLI example via `--provider meta`.
 
 - **GASP bridge** (feature `gasp`) — `gasp::GaspRecorder` records agent runs
-  into a [GASP](https://github.com/yologdev/gasp) agent repo via
-  `yoagent-state`: append-only `state/events.jsonl` (goal/run/model/tool
+  into a [GASP](https://github.com/MKonovalov/gasp) agent repo via
+  `arcgent-state`: append-only `state/events.jsonl` (goal/run/model/tool
   events), one git commit per run (scaffolding committed at init so `git
   clone` restores a complete agent), stale/interrupted runs closed safely,
   events teed to your UI **before** recording (a recording failure never
   blinds the UI; the error surfaces via the returned handle). Redaction hook
   via `with_summarizer` — summaries of tool inputs/outputs are persisted to
-  a shareable repo. yoagent is now a **tested** GASP-conformant runtime: CI
+  a shareable repo. arcgent is now a **tested** GASP-conformant runtime: CI
   emits a repo and runs the protocol's 7-check suite against a **fresh
   clone** (the actual restore operation). New `gasp_emit` example and docs
   page.

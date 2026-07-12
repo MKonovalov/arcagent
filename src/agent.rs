@@ -146,7 +146,7 @@ impl Agent {
     /// always overrides the environment.
     ///
     /// ```no_run
-    /// use yoagent::{Agent, provider::ModelConfig};
+    /// use arcgent::{Agent, provider::ModelConfig};
     /// // provider auto-selected from config.api; key from ANTHROPIC_API_KEY
     /// let agent = Agent::from_config(ModelConfig::anthropic("claude-sonnet-5", "Sonnet 5"));
     /// ```
@@ -837,8 +837,8 @@ impl Agent {
     /// the loop concurrently and returns immediately.
     ///
     /// ```rust,no_run
-    /// # use yoagent::Agent;
-    /// # use yoagent::provider::{MockProvider, ModelConfig};
+    /// # use arcgent::Agent;
+    /// # use arcgent::provider::{MockProvider, ModelConfig};
     /// # async fn example() {
     /// let mut agent = Agent::from_provider(MockProvider::text("hi"), ModelConfig::mock());
     /// let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel();

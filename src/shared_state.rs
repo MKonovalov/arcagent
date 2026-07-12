@@ -7,7 +7,7 @@
 //! # Example
 //!
 //! ```rust,no_run
-//! use yoagent::shared_state::SharedState;
+//! use arcgent::shared_state::SharedState;
 //!
 //! # async fn example() {
 //! let state = SharedState::new();
@@ -196,7 +196,7 @@ impl SharedStateBackend for MemoryBackend {
 /// (no extension) for easy inspection and debugging.
 ///
 /// ```rust,no_run
-/// use yoagent::shared_state::{SharedState, FileBackend};
+/// use arcgent::shared_state::{SharedState, FileBackend};
 ///
 /// # async fn example() {
 /// let state = SharedState::with_backend(FileBackend::new("/tmp/agent-state"));

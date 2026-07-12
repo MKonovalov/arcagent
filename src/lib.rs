@@ -1,4 +1,4 @@
-//! **yoagent** — the agent runtime for Rust.
+//! **arcgent** — the agent runtime for Rust.
 //!
 //! A simple, effective agent loop with tool execution and event streaming:
 //! `Prompt → LLM stream → tool execution → loop`. The loop is the product;
@@ -7,7 +7,7 @@
 //! # Quick start
 //!
 //! ```no_run
-//! use yoagent::{Agent, provider::ModelConfig, tools};
+//! use arcgent::{Agent, provider::ModelConfig, tools};
 //!
 //! # #[tokio::main]
 //! # async fn main() {
@@ -35,7 +35,7 @@
 //!   with per-provider quirk flags.
 //! - **Tools** ([`tools`]) — bash, read/write/edit file, search; add your own
 //!   via the [`AgentTool`] trait. [MCP](mcp) servers and
-//!   [OpenAPI specs](https://docs.rs/yoagent/latest/yoagent/openapi/index.html)
+//!   [OpenAPI specs](https://docs.rs/arcgent/latest/arcgent/openapi/index.html)
 //!   (feature `openapi`) become tools transparently.
 //! - **Steering** — inject guidance into a running agent ([`Agent::steer`]);
 //!   picked up between tool executions (per batch under the default parallel
@@ -45,11 +45,11 @@
 //!   tool call / `json_schema` / `responseSchema`).
 //! - **Permissions** ([`ToolMiddleware`]) — async approve/deny/modify hooks
 //!   gating every tool call; the mechanism behind approval prompts and
-//!   policy engines (yoagent ships no policy — you install it).
+//!   policy engines (arcgent ships no policy — you install it).
 //! - **Sub-agents** ([`SubAgentTool`]) — delegation with per-sub-agent models
 //!   and [`SharedState`] for passing artifacts by reference.
 //! - **GASP** (feature `gasp`) — record runs into a
-//!   [GASP](https://github.com/yologdev/gasp) agent repo: append-only
+//!   [GASP](https://github.com/MKonovalov/gasp) agent repo: append-only
 //!   semantic event log, restore = clone + replay, conformance-checked in CI.
 //! - **Session trees** ([`Session`]) — branching conversation history with
 //!   fork, checkpoints, and JSONL persistence; edit an earlier turn and
@@ -61,7 +61,7 @@
 //! - **Telemetry** — `tracing` spans per loop/LLM-stream/tool with token and
 //!   cost fields; bridge to OpenTelemetry app-side, negligible cost otherwise.
 //!
-//! The [book](https://yologdev.github.io/yoagent/) covers concepts and
+//! The [book](https://MKonovalov.github.io/arcgent/) covers concepts and
 //! provider-specific guides.
 
 pub mod agent;

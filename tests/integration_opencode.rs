@@ -5,9 +5,9 @@
 
 use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
-use yoagent::agent_loop::{agent_loop, AgentLoopConfig};
-use yoagent::provider::{AnthropicProvider, ModelConfig, OpenAiCompatProvider, StreamProvider};
-use yoagent::types::*;
+use arcgent::agent_loop::{agent_loop, AgentLoopConfig};
+use arcgent::provider::{AnthropicProvider, ModelConfig, OpenAiCompatProvider, StreamProvider};
+use arcgent::types::*;
 
 fn api_key() -> String {
     std::env::var("OPENCODE_API_KEY").expect("OPENCODE_API_KEY must be set")
@@ -35,7 +35,7 @@ fn make_config(
         cache_config: CacheConfig::default(),
         output_schema: None,
         tool_execution: ToolExecutionStrategy::default(),
-        retry_config: yoagent::RetryConfig::default(),
+        retry_config: arcgent::RetryConfig::default(),
         before_turn: None,
         after_turn: None,
         on_error: None,

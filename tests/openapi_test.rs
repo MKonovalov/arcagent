@@ -1,7 +1,7 @@
 #![cfg(feature = "openapi")]
 
-use yoagent::openapi::{OpenApiConfig, OpenApiToolAdapter, OperationFilter};
-use yoagent::types::{AgentTool, ToolContext};
+use arcgent::openapi::{OpenApiConfig, OpenApiToolAdapter, OperationFilter};
+use arcgent::types::{AgentTool, ToolContext};
 
 const SPEC: &str = r#"{
     "openapi": "3.0.0",
@@ -233,7 +233,7 @@ async fn test_execute_get_with_path_param() {
         .unwrap();
 
     let text = match &result.content[0] {
-        yoagent::types::Content::Text { text } => text,
+        arcgent::types::Content::Text { text } => text,
         _ => panic!("Expected text content"),
     };
     assert!(text.contains("200"), "Should contain status 200");
@@ -429,7 +429,7 @@ async fn test_execute_non_2xx_returns_ok() {
 
     assert_eq!(result.details["status"], 404);
     let text = match &result.content[0] {
-        yoagent::types::Content::Text { text } => text,
+        arcgent::types::Content::Text { text } => text,
         _ => panic!("Expected text"),
     };
     assert!(text.contains("Not found"));
@@ -459,7 +459,7 @@ async fn test_execute_response_truncation() {
         .unwrap();
 
     let text = match &result.content[0] {
-        yoagent::types::Content::Text { text } => text,
+        arcgent::types::Content::Text { text } => text,
         _ => panic!("Expected text"),
     };
     assert!(text.contains("[truncated]"));
@@ -484,7 +484,7 @@ async fn test_execute_missing_path_param_errors() {
         .await
         .unwrap();
     let text = match &result.content[0] {
-        yoagent::types::Content::Text { text } => text,
+        arcgent::types::Content::Text { text } => text,
         _ => panic!("Expected text"),
     };
     assert!(text.contains("Missing required path parameter"));
@@ -508,7 +508,7 @@ async fn test_execute_rejects_non_object_params() {
         .await
         .unwrap();
     let text = match &result.content[0] {
-        yoagent::types::Content::Text { text } => text,
+        arcgent::types::Content::Text { text } => text,
         _ => panic!("Expected text"),
     };
     assert!(text.contains("string"));

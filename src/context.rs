@@ -73,8 +73,8 @@ pub fn total_tokens(messages: &[AgentMessage]) -> usize {
 /// # Example
 ///
 /// ```rust
-/// use yoagent::context::ContextTracker;
-/// use yoagent::types::Usage;
+/// use arcgent::context::ContextTracker;
+/// use arcgent::types::Usage;
 ///
 /// let mut tracker = ContextTracker::new();
 /// // After receiving an assistant response with usage data:
@@ -191,7 +191,7 @@ impl ContextConfig {
 /// - Apply custom preservation rules (e.g., always keep decisions)
 /// - Emit metadata about what was compressed
 ///
-/// See the [Custom Compaction](https://yologdev.github.io/yoagent/concepts/agent-loop.html#custom-compaction)
+/// See the [Custom Compaction](https://MKonovalov.github.io/arcgent/concepts/agent-loop.html#custom-compaction)
 /// docs for examples.
 pub trait CompactionStrategy: Send + Sync {
     /// Compact messages to fit within the token budget defined by `config`.

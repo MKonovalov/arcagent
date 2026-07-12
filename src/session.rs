@@ -13,7 +13,7 @@
 //! # Typical flow
 //!
 //! ```no_run
-//! use yoagent::{Agent, Session, provider::ModelConfig};
+//! use arcgent::{Agent, Session, provider::ModelConfig};
 //!
 //! # #[tokio::main]
 //! # async fn main() {

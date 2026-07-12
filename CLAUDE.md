@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**yoagent** is a Rust library (crate) for building AI coding agents. It provides a core agent loop, multi-provider LLM streaming, built-in tools, MCP integration, and context management. Published to crates.io as `yoagent`.
+**arcgent** is a Rust library (crate) for building AI coding agents. It provides a core agent loop, multi-provider LLM streaming, built-in tools, MCP integration, and context management. Published to crates.io as `arcgent`.
 
 ## Build & Development Commands
 
@@ -86,7 +86,7 @@ Behind the `openapi` Cargo feature. `OpenApiToolAdapter` parses an OpenAPI 3.0 s
 
 ### GASP Bridge (`gasp.rs`, feature-gated)
 
-Behind the `gasp` Cargo feature (dep: `yoagent-state`, the GASP reference runtime). `GaspRecorder` consumes the `AgentEvent` stream (via `recording_sender`, which also tees to a forward sender) and maps it onto `yoagent_state`'s `YoAgentStateSink`: AgentStart→run.started, assistant MessageEnd→model.called/finished pair, ToolExecutionStart/End→tool.called/finished, AgentEnd→run.finished + one git commit per run at stream close (scaffolding committed at init so clones restore). Stale open runs are closed as "interrupted" on open; a dropped sender finishes the run with the derived outcome; InputRejected → "rejected". Recording failures stop recording but the forward tee keeps flowing (error surfaces only via the returned handle — await it); events are forwarded BEFORE recording. `Ok(None)` when no AgentStart arrived. Zero loop changes. CI job `gasp-conformance` emits a repo via `examples/gasp_emit.rs` and runs the gasp conformance checker (7 checks) against it.
+Behind the `gasp` Cargo feature (dep: `arcgent-state`, the GASP reference runtime). `GaspRecorder` consumes the `AgentEvent` stream (via `recording_sender`, which also tees to a forward sender) and maps it onto `arcgent_state`'s `arcgentStateSink`: AgentStart→run.started, assistant MessageEnd→model.called/finished pair, ToolExecutionStart/End→tool.called/finished, AgentEnd→run.finished + one git commit per run at stream close (scaffolding committed at init so clones restore). Stale open runs are closed as "interrupted" on open; a dropped sender finishes the run with the derived outcome; InputRejected → "rejected". Recording failures stop recording but the forward tee keeps flowing (error surfaces only via the returned handle — await it); events are forwarded BEFORE recording. `Ok(None)` when no AgentStart arrived. Zero loop changes. CI job `gasp-conformance` emits a repo via `examples/gasp_emit.rs` and runs the gasp conformance checker (7 checks) against it.
 
 ### Session Trees (`session.rs`)
 

@@ -17,13 +17,13 @@
 //!   XAI_API_KEY=xai-... cargo run --example rlm -- path/to/dir
 
 use std::sync::{Arc, Mutex};
-use yoagent::provider::model::ModelConfig;
-use yoagent::provider::{OpenAiCompatProvider, StreamProvider};
+use arcgent::provider::model::ModelConfig;
+use arcgent::provider::{OpenAiCompatProvider, StreamProvider};
 #[allow(unused_imports)]
-use yoagent::shared_state::{FileBackend, SharedState};
-use yoagent::sub_agent::SubAgentTool;
-use yoagent::tools;
-use yoagent::*;
+use arcgent::shared_state::{FileBackend, SharedState};
+use arcgent::sub_agent::SubAgentTool;
+use arcgent::tools;
+use arcgent::*;
 
 #[tokio::main]
 async fn main() {

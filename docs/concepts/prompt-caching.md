@@ -1,6 +1,6 @@
 # Prompt Caching
 
-yoagent automatically optimizes API costs through prompt caching. For providers that support it, stable content (system prompts, tool definitions, conversation history) is cached between turns, giving you up to **90% savings** on input tokens.
+arcgent automatically optimizes API costs through prompt caching. For providers that support it, stable content (system prompts, tool definitions, conversation history) is cached between turns, giving you up to **90% savings** on input tokens.
 
 ## How It Works
 
@@ -19,7 +19,7 @@ In a multi-turn agent loop, each request sends the full context: system prompt +
 
 ### What Gets Cached (Anthropic)
 
-yoagent places up to 3 cache breakpoints automatically:
+arcgent places up to 3 cache breakpoints automatically:
 
 1. **System prompt** — stable across all turns
 2. **Tool definitions** — rarely change between turns
@@ -29,7 +29,7 @@ This means on a typical multi-turn conversation, only the latest user message an
 
 ### DeepSeek
 
-DeepSeek's API manages context caching automatically. yoagent does not send
+DeepSeek's API manages context caching automatically. arcgent does not send
 Anthropic-style `cache_control` markers for DeepSeek; instead, keep stable
 prefixes stable (system prompt, tool definitions, and earlier messages) and
 monitor DeepSeek's `prompt_cache_hit_tokens` / `prompt_cache_miss_tokens`
@@ -42,7 +42,7 @@ Caching is **enabled by default** with automatic breakpoint placement. No config
 ### Disable Explicit Cache Hints
 
 ```rust
-use yoagent::{CacheConfig, CacheStrategy};
+use arcgent::{CacheConfig, CacheStrategy};
 
 let agent = Agent::from_config(ModelConfig::anthropic("claude-sonnet-5", "Claude Sonnet 5"))
     .with_cache_config(CacheConfig {
@@ -51,7 +51,7 @@ let agent = Agent::from_config(ModelConfig::anthropic("claude-sonnet-5", "Claude
     });
 ```
 
-This disables yoagent-managed cache hints for providers such as Anthropic. It
+This disables arcgent-managed cache hints for providers such as Anthropic. It
 does not turn off automatic server-side caching for providers such as DeepSeek
 or OpenAI.
 

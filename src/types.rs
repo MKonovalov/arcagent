@@ -324,7 +324,7 @@ impl Usage {
 // Cache configuration
 // ---------------------------------------------------------------------------
 
-/// Controls yoagent-managed prompt caching hints for providers that support
+/// Controls arcgent-managed prompt caching hints for providers that support
 /// explicit cache controls.
 ///
 /// By default, caching is enabled with automatic breakpoint placement.
@@ -632,7 +632,7 @@ pub enum ToolDecision {
 /// Async hook that gates every tool call — the mechanism behind permission
 /// prompts, policy engines, and argument rewriting.
 ///
-/// yoagent ships the mechanism, not a policy: install middleware via
+/// arcgent ships the mechanism, not a policy: install middleware via
 /// [`Agent::with_tool_middleware`](crate::Agent::with_tool_middleware) (or
 /// [`AgentLoopConfig::tool_middleware`](crate::agent_loop::AgentLoopConfig))
 /// and decide per call. Middleware run in a chain: each may rewrite the

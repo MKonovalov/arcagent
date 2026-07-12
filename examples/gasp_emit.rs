@@ -4,14 +4,14 @@
 //! Run with: cargo run --example gasp_emit --features gasp -- [repo-path]
 //!
 //! The emitted repo passes the GASP conformance checker
-//! (github.com/yologdev/gasp) — yoagent's CI verifies exactly that. Point it
+//! (github.com/MKonovalov/gasp) — arcgent's CI verifies exactly that. Point it
 //! at a path of your choice and inspect `state/events.jsonl` and `git log`
 //! afterwards.
 
-use yoagent::gasp::{GaspRecorder, GoalRef};
-use yoagent::provider::mock::*;
-use yoagent::provider::{MockProvider, ModelConfig};
-use yoagent::*;
+use arcgent::gasp::{GaspRecorder, GoalRef};
+use arcgent::provider::mock::*;
+use arcgent::provider::{MockProvider, ModelConfig};
+use arcgent::*;
 
 /// A tiny tool so the log shows tool-call pairs, not just model calls.
 struct TouchTool;
@@ -48,7 +48,7 @@ impl AgentTool for TouchTool {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let repo = std::env::args()
         .nth(1)
-        .unwrap_or_else(|| "/tmp/yoagent-gasp-demo".into());
+        .unwrap_or_else(|| "/tmp/arcgent-gasp-demo".into());
 
     let recorder = GaspRecorder::init(
         &repo,
@@ -78,7 +78,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("recorded run {run_id} into {repo}");
     println!("inspect:  cat {repo}/state/events.jsonl");
-    println!("verify:   git clone https://github.com/yologdev/gasp");
+    println!("verify:   git clone https://github.com/MKonovalov/gasp");
     println!("          cd gasp/conformance-check && cargo run -q -- {repo}");
     Ok(())
 }

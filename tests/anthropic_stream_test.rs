@@ -8,10 +8,10 @@ use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
 use wiremock::matchers::{header, method, path};
 use wiremock::{Mock, MockServer, Request, ResponseTemplate};
-use yoagent::provider::{
+use arcgent::provider::{
     AnthropicCompat, AnthropicProvider, ModelConfig, StreamConfig, StreamProvider,
 };
-use yoagent::types::*;
+use arcgent::types::*;
 
 /// Matcher: the request must NOT carry the given header.
 struct HeaderAbsent(&'static str);
@@ -47,7 +47,7 @@ fn stream_config(base_url: &str, anthropic: Option<AnthropicCompat>) -> StreamCo
     config
 }
 
-async fn run_stream(config: StreamConfig) -> Result<Message, yoagent::provider::ProviderError> {
+async fn run_stream(config: StreamConfig) -> Result<Message, arcgent::provider::ProviderError> {
     let (tx, _rx) = mpsc::unbounded_channel();
     AnthropicProvider
         .stream(config, tx, CancellationToken::new())
@@ -196,7 +196,7 @@ async fn rate_limit_carries_retry_after_from_header() {
         .expect_err("429 must surface as an error");
 
     match err {
-        yoagent::provider::ProviderError::RateLimited { retry_after_ms } => {
+        arcgent::provider::ProviderError::RateLimited { retry_after_ms } => {
             assert_eq!(retry_after_ms, Some(7000));
         }
         other => panic!("expected RateLimited, got: {:?}", other),

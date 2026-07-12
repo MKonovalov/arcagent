@@ -1,16 +1,16 @@
 [package]
-name = "yoagent"
+name = "arcgent"
 version = "0.12.0"
 edition = "2021"
 description = "Simple, effective agent loop with tool execution and event streaming"
 license = "MIT"
-repository = "https://github.com/yologdev/yoagent"
-homepage = "https://yologdev.github.io/yoagent/"
-documentation = "https://docs.rs/yoagent"
+repository = "https://github.com/MKonovalov/arcgent"
+homepage = "https://MKonovalov.github.io/arcgent/"
+documentation = "https://docs.rs/arcgent"
 readme = "README.md"
 keywords = ["agent", "llm", "ai", "tools", "streaming"]
 categories = ["api-bindings", "asynchronous"]
-authors = ["Yuanhao <yuanhao@yolog.dev>"]
+authors = ["Mike <mike.kon@gmail.com>"]
 rust-version = "1.86"
 exclude = ["docs/images/*", "docs/theme/*", ".github/*", "scripts/*"]
 
@@ -32,11 +32,11 @@ base64 = "0.22"
 openapiv3 = { version = "2", optional = true }
 serde_yaml_ng = { version = "0.10", optional = true }
 # 0.4.2 floor: 0.4.1 declared MSRV 1.85 but required 1.88 (let-chain)
-yoagent-state = { version = "0.4.2", optional = true }
+arcgent-state = { version = "0.4.2", optional = true }
 
 [features]
 openapi = ["dep:openapiv3", "dep:serde_yaml_ng", "reqwest/query"]
-gasp = ["dep:yoagent-state"]
+gasp = ["dep:arcgent-state"]
 
 [dev-dependencies]
 tokio = { version = "1", features = ["full", "test-util"] }

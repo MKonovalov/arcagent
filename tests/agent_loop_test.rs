@@ -2,11 +2,11 @@
 
 use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
-use yoagent::agent_loop::{agent_loop, agent_loop_continue, AgentLoopConfig};
-use yoagent::context::ExecutionLimits;
-use yoagent::provider::mock::*;
-use yoagent::provider::MockProvider;
-use yoagent::*;
+use arcgent::agent_loop::{agent_loop, agent_loop_continue, AgentLoopConfig};
+use arcgent::context::ExecutionLimits;
+use arcgent::provider::mock::*;
+use arcgent::provider::MockProvider;
+use arcgent::*;
 
 fn make_config(provider: MockProvider) -> AgentLoopConfig {
     AgentLoopConfig {
@@ -27,7 +27,7 @@ fn make_config(provider: MockProvider) -> AgentLoopConfig {
         cache_config: CacheConfig::default(),
         output_schema: None,
         tool_execution: ToolExecutionStrategy::default(),
-        retry_config: yoagent::RetryConfig::default(),
+        retry_config: arcgent::RetryConfig::default(),
         before_turn: None,
         after_turn: None,
         on_error: None,
@@ -699,7 +699,7 @@ struct FailThenSucceedProvider {
     inner: MockProvider,
 }
 
-use yoagent::provider::{ProviderError, StreamConfig, StreamEvent, StreamProvider};
+use arcgent::provider::{ProviderError, StreamConfig, StreamEvent, StreamProvider};
 
 struct UsageProvider {
     usage: Usage,
@@ -713,7 +713,7 @@ impl StreamProvider for UsageProvider {
         _config: StreamConfig,
         tx: tokio::sync::mpsc::UnboundedSender<StreamEvent>,
         _cancel: tokio_util::sync::CancellationToken,
-    ) -> Result<yoagent::Message, ProviderError> {
+    ) -> Result<arcgent::Message, ProviderError> {
         self.calls.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
 
         let message = Message::assistant(
@@ -772,7 +772,7 @@ async fn test_execution_limit_counts_cached_tokens() {
         cache_config: CacheConfig::default(),
         output_schema: None,
         tool_execution: ToolExecutionStrategy::default(),
-        retry_config: yoagent::RetryConfig::default(),
+        retry_config: arcgent::RetryConfig::default(),
         before_turn: None,
         after_turn: None,
         on_error: None,
@@ -822,7 +822,7 @@ impl StreamProvider for FailThenSucceedProvider {
         config: StreamConfig,
         tx: tokio::sync::mpsc::UnboundedSender<StreamEvent>,
         cancel: tokio_util::sync::CancellationToken,
-    ) -> Result<yoagent::Message, ProviderError> {
+    ) -> Result<arcgent::Message, ProviderError> {
         let attempt = self
             .fail_count
             .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
@@ -870,7 +870,7 @@ async fn test_retry_on_rate_limit_succeeds() {
         cache_config: CacheConfig::default(),
         output_schema: None,
         tool_execution: ToolExecutionStrategy::default(),
-        retry_config: yoagent::RetryConfig {
+        retry_config: arcgent::RetryConfig {
             max_retries: 3,
             initial_delay_ms: 10,
             backoff_multiplier: 2.0,
@@ -940,7 +940,7 @@ async fn test_retry_exhausted_returns_error() {
         cache_config: CacheConfig::default(),
         output_schema: None,
         tool_execution: ToolExecutionStrategy::default(),
-        retry_config: yoagent::RetryConfig {
+        retry_config: arcgent::RetryConfig {
             max_retries: 2,
             initial_delay_ms: 10,
             backoff_multiplier: 2.0,
@@ -1017,7 +1017,7 @@ async fn test_no_retry_on_auth_error() {
         cache_config: CacheConfig::default(),
         output_schema: None,
         tool_execution: ToolExecutionStrategy::default(),
-        retry_config: yoagent::RetryConfig::default(), // 3 retries, but auth is not retryable
+        retry_config: arcgent::RetryConfig::default(), // 3 retries, but auth is not retryable
         before_turn: None,
         after_turn: None,
         on_error: None,
@@ -1077,7 +1077,7 @@ async fn test_retry_none_disables_retries() {
         cache_config: CacheConfig::default(),
         output_schema: None,
         tool_execution: ToolExecutionStrategy::default(),
-        retry_config: yoagent::RetryConfig::none(), // disabled
+        retry_config: arcgent::RetryConfig::none(), // disabled
         before_turn: None,
         after_turn: None,
         on_error: None,
@@ -1313,7 +1313,7 @@ async fn test_on_error_fires_on_provider_error() {
         cache_config: CacheConfig::default(),
         output_schema: None,
         tool_execution: ToolExecutionStrategy::default(),
-        retry_config: yoagent::RetryConfig::none(),
+        retry_config: arcgent::RetryConfig::none(),
         before_turn: None,
         after_turn: None,
         on_error: Some(std::sync::Arc::new(move |err| {
@@ -1934,8 +1934,8 @@ async fn test_filter_non_text_content_only_text_extracted() {
 
 #[tokio::test]
 async fn test_default_compaction_matches_compact_messages() {
-    use yoagent::context::{compact_messages, ContextConfig, DefaultCompaction};
-    use yoagent::CompactionStrategy;
+    use arcgent::context::{compact_messages, ContextConfig, DefaultCompaction};
+    use arcgent::CompactionStrategy;
 
     let mut messages = Vec::new();
     for i in 0..100 {
@@ -1972,8 +1972,8 @@ async fn test_default_compaction_matches_compact_messages() {
 
 #[tokio::test]
 async fn test_custom_compaction_strategy_is_called() {
-    use yoagent::context::ContextConfig;
-    use yoagent::CompactionStrategy;
+    use arcgent::context::ContextConfig;
+    use arcgent::CompactionStrategy;
 
     /// A custom strategy that prepends a marker message, then delegates
     /// to the default compaction.
@@ -2021,7 +2021,7 @@ async fn test_custom_compaction_strategy_is_called() {
         cache_config: CacheConfig::default(),
         output_schema: None,
         tool_execution: ToolExecutionStrategy::default(),
-        retry_config: yoagent::RetryConfig::none(),
+        retry_config: arcgent::RetryConfig::none(),
         before_turn: None,
         after_turn: None,
         on_error: None,
@@ -2070,7 +2070,7 @@ async fn test_custom_compaction_strategy_is_called() {
 
 #[tokio::test]
 async fn test_none_compaction_strategy_uses_default() {
-    use yoagent::context::ContextConfig;
+    use arcgent::context::ContextConfig;
 
     // Provider returns a simple text response
     let provider = MockProvider::text("Got it.");
@@ -2099,7 +2099,7 @@ async fn test_none_compaction_strategy_uses_default() {
         cache_config: CacheConfig::default(),
         output_schema: None,
         tool_execution: ToolExecutionStrategy::default(),
-        retry_config: yoagent::RetryConfig::none(),
+        retry_config: arcgent::RetryConfig::none(),
         before_turn: None,
         after_turn: None,
         on_error: None,
@@ -2232,11 +2232,11 @@ struct RecordingCompaction {
     calls: std::sync::Mutex<Vec<(usize, usize)>>, // (max_context_tokens, system_prompt_tokens)
 }
 
-impl yoagent::CompactionStrategy for RecordingCompaction {
+impl arcgent::CompactionStrategy for RecordingCompaction {
     fn compact(
         &self,
         messages: Vec<AgentMessage>,
-        config: &yoagent::context::ContextConfig,
+        config: &arcgent::context::ContextConfig,
     ) -> Vec<AgentMessage> {
         self.calls
             .lock()
@@ -2265,7 +2265,7 @@ fn calibration_config(
         get_follow_up_messages: Some(Box::new(|| {
             vec![AgentMessage::Llm(Message::user("follow up"))]
         })),
-        context_config: Some(yoagent::context::ContextConfig {
+        context_config: Some(arcgent::context::ContextConfig {
             max_context_tokens,
             system_prompt_tokens: 500,
             keep_recent: 1,
@@ -2281,7 +2281,7 @@ fn calibration_config(
         cache_config: CacheConfig::default(),
         output_schema: None,
         tool_execution: ToolExecutionStrategy::default(),
-        retry_config: yoagent::RetryConfig::none(),
+        retry_config: arcgent::RetryConfig::none(),
         before_turn: None,
         after_turn: None,
         on_error: None,

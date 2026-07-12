@@ -1,10 +1,10 @@
 <div align="center">
 
 <picture>
-  <img alt="yoagent" src="docs/images/banner.png" width="100%" height="auto">
+  <img alt="arcgent" src="docs/images/banner.png" width="100%" height="auto">
 </picture>
 
-<a href="https://crates.io/crates/yoagent">crates.io</a> · <a href="https://yologdev.github.io/yoagent/">Docs</a> · <a href="https://github.com/yologdev/yoagent">GitHub</a> · <a href="https://deepwiki.com/yologdev/yoagent">DeepWiki</a> · <a href="https://github.com/yologdev/yoagent/issues">Issues</a> · <a href="https://github.com/yologdev/yoagent/releases">Releases</a>
+<a href="https://crates.io/crates/arcgent">crates.io</a> · <a href="https://MKonovalov.github.io/arcgent/">Docs</a> · <a href="https://github.com/MKonovalov/arcgent">GitHub</a> · <a href="https://deepwiki.com/MKonovalov/arcgent">DeepWiki</a> · <a href="https://github.com/MKonovalov/arcgent/issues">Issues</a> · <a href="https://github.com/MKonovalov/arcgent/releases">Releases</a>
 
 [![][crates-shield]][crates-link]
 [![][ci-shield]][ci-link]
@@ -18,7 +18,7 @@
 
 ## Overview
 
-yoagent is a simple, effective agent loop with tool execution and event streaming in Rust. Inspired by [pi-agent-core](https://github.com/badlogic/pi-mono/tree/main/packages/agent).
+arcgent is a simple, effective agent loop with tool execution and event streaming in Rust. Inspired by [pi-agent-core](https://github.com/badlogic/pi-mono/tree/main/packages/agent).
 
 The loop is the product. No over-engineered planning/reflection/RAG layers — just:
 
@@ -65,7 +65,7 @@ Everything is observable via events. Supports 7 API protocols covering 20+ LLM p
 **Integrations**
 - OpenAPI tool adapter — auto-generate tools from any OpenAPI 3.0 spec (`features = ["openapi"]`)
 - MCP (Model Context Protocol) — connect to MCP tool servers via stdio or HTTP
-- GASP (`features = ["gasp"]`) — record runs into a [GASP](https://github.com/yologdev/gasp) agent repo (append-only semantic event log; restore = clone + replay); yoagent is a **tested** GASP-conformant runtime — the protocol's 7-check conformance suite runs in CI
+- GASP (`features = ["gasp"]`) — record runs into a [GASP](https://github.com/MKonovalov/gasp) agent repo (append-only semantic event log; restore = clone + replay); arcgent is a **tested** GASP-conformant runtime — the protocol's 7-check conformance suite runs in CI
 
 **Context Management**
 - Context overflow detection across all major providers (Anthropic, OpenAI, Google, Bedrock, xAI, Groq, OpenRouter, llama.cpp, and more)
@@ -81,23 +81,23 @@ Everything is observable via events. Supports 7 API protocols covering 20+ LLM p
 ### Install
 
 ```bash
-cargo add yoagent tokio --features tokio/full
+cargo add arcgent tokio --features tokio/full
 ```
 
 Or add to `Cargo.toml`:
 
 ```toml
 [dependencies]
-yoagent = "0.12"
+arcgent = "0.12"
 tokio = { version = "1", features = ["full"] }
 ```
 
 ### Basic Usage
 
 ```rust
-use yoagent::agent::Agent;
-use yoagent::provider::ModelConfig;
-use yoagent::types::*;
+use arcgent::agent::Agent;
+use arcgent::provider::ModelConfig;
+use arcgent::types::*;
 
 #[tokio::main]
 async fn main() {
@@ -132,7 +132,7 @@ skills/
 ```
 
 ```rust
-use yoagent::SkillSet;
+use arcgent::SkillSet;
 
 let skills = SkillSet::load(&["./skills"])?;
 
@@ -161,7 +161,7 @@ cargo run --example cli -- --api-url http://localhost:1234/v1 --model my-model
 A ~250-line interactive coding agent with all built-in tools, skills support, streaming output, and colored tool feedback. Like a baby Claude Code.
 
 ```
-  yoagent cli — mini coding agent
+  arcgent cli — mini coding agent
   Type /quit to exit, /clear to reset
 
   model: claude-sonnet-5
@@ -184,7 +184,7 @@ Found 3 TODOs:
 <summary>OpenAI-compatible provider example</summary>
 
 ```rust
-use yoagent::{Agent, provider::ModelConfig};
+use arcgent::{Agent, provider::ModelConfig};
 
 // Pick a first-class preset — the provider is inferred from it, and the API
 // key is read from that provider's conventional env var (GROQ_API_KEY here).
@@ -220,7 +220,7 @@ OpenAI-compatible providers share one implementation with per-provider quirk fla
 ## Architecture
 
 ```
-yoagent/
+arcgent/
 ├── src/
 │   ├── types.rs            # Message, AgentMessage, AgentEvent, AgentTool trait
 │   ├── agent_loop.rs       # Core loop (agent_loop + agent_loop_continue)
@@ -259,17 +259,17 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 ## Links
 
-- [Documentation](https://yologdev.github.io/yoagent/) — Full reference
+- [Documentation](https://MKonovalov.github.io/arcgent/) — Full reference
 - [pi-agent-core](https://github.com/badlogic/pi-mono/tree/main/packages/agent) — Original inspiration (TypeScript)
 
 <!-- Badge link definitions -->
-[crates-shield]: https://img.shields.io/crates/v/yoagent?labelColor=black&style=flat-square&logo=rust&color=orange
-[crates-link]: https://crates.io/crates/yoagent
-[ci-shield]: https://img.shields.io/github/actions/workflow/status/yologdev/yoagent/ci.yml?labelColor=black&style=flat-square&logo=github&label=CI
-[ci-link]: https://github.com/yologdev/yoagent/actions/workflows/ci.yml
+[crates-shield]: https://img.shields.io/crates/v/arcgent?labelColor=black&style=flat-square&logo=rust&color=orange
+[crates-link]: https://crates.io/crates/arcgent
+[ci-shield]: https://img.shields.io/github/actions/workflow/status/MKonovalov/arcgent/ci.yml?labelColor=black&style=flat-square&logo=github&label=CI
+[ci-link]: https://github.com/MKonovalov/arcgent/actions/workflows/ci.yml
 [license-shield]: https://img.shields.io/badge/license-MIT-white?labelColor=black&style=flat-square
-[license-link]: https://github.com/yologdev/yoagent/blob/main/LICENSE
+[license-link]: https://github.com/MKonovalov/arcgent/blob/main/LICENSE
 [docs-shield]: https://img.shields.io/badge/docs-mdBook-blue?labelColor=black&style=flat-square
-[docs-link]: https://yologdev.github.io/yoagent/
-[last-commit-shield]: https://img.shields.io/github/last-commit/yologdev/yoagent?color=c4f042&labelColor=black&style=flat-square
-[last-commit-link]: https://github.com/yologdev/yoagent/commits/main
+[docs-link]: https://MKonovalov.github.io/arcgent/
+[last-commit-shield]: https://img.shields.io/github/last-commit/MKonovalov/arcgent?color=c4f042&labelColor=black&style=flat-square
+[last-commit-link]: https://github.com/MKonovalov/arcgent/commits/main

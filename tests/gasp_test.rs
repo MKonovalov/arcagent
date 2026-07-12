@@ -3,10 +3,10 @@
 #![cfg(feature = "gasp")]
 
 use std::process::Command;
-use yoagent::gasp::{GaspRecorder, GoalRef};
-use yoagent::provider::mock::*;
-use yoagent::provider::{MockProvider, ModelConfig};
-use yoagent::*;
+use arcgent::gasp::{GaspRecorder, GoalRef};
+use arcgent::provider::mock::*;
+use arcgent::provider::{MockProvider, ModelConfig};
+use arcgent::*;
 
 struct NoopTool;
 
@@ -40,10 +40,10 @@ impl AgentTool for NoopTool {
 /// plain `git commit`, so provide one via env (idempotent across tests).
 fn ensure_git_identity() {
     for (k, v) in [
-        ("GIT_AUTHOR_NAME", "yoagent-test"),
-        ("GIT_AUTHOR_EMAIL", "test@yolog.dev"),
-        ("GIT_COMMITTER_NAME", "yoagent-test"),
-        ("GIT_COMMITTER_EMAIL", "test@yolog.dev"),
+        ("GIT_AUTHOR_NAME", "arcgent-test"),
+        ("GIT_AUTHOR_EMAIL", "test@Arc.dev"),
+        ("GIT_COMMITTER_NAME", "arcgent-test"),
+        ("GIT_COMMITTER_EMAIL", "test@Arc.dev"),
     ] {
         std::env::set_var(k, v);
     }
@@ -97,7 +97,7 @@ async fn records_a_full_run_with_expected_kinds_and_commit() {
     let kinds = event_kinds(dir.path());
     // Semantic skeleton, in order (ops_applied lines interleave freely).
     // Allowlist the semantic kinds (bookkeeping kinds like state.ops_applied
-    // may grow in yoagent-state minors without breaking this test).
+    // may grow in arcgent-state minors without breaking this test).
     let semantic: Vec<&str> = kinds
         .iter()
         .map(|s| s.as_str())
@@ -520,7 +520,7 @@ async fn dangling_existing_goal_errors_at_open() {
     .unwrap();
     drop(r);
 
-    let bogus = yoagent::gasp::GoalId::generate();
+    let bogus = arcgent::gasp::GoalId::generate();
     let err = GaspRecorder::open(
         dir.path().to_path_buf(),
         "test-agent",

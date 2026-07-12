@@ -1,12 +1,12 @@
-# yoagent
+# arcgent
 
 **Simple, effective agent loop in Rust.**
 
-yoagent is a library for building LLM-powered agents that can use tools. It provides the core loop — prompt the model, execute tool calls, feed results back — and gets out of your way.
+arcgent is a library for building LLM-powered agents that can use tools. It provides the core loop — prompt the model, execute tool calls, feed results back — and gets out of your way.
 
 ## Philosophy
 
-**The loop is the product.** An agent is just a loop: send messages to an LLM, get back text and tool calls, execute the tools, repeat until the model stops. yoagent implements this loop with streaming, cancellation, context management, and multi-provider support — so you don't have to.
+**The loop is the product.** An agent is just a loop: send messages to an LLM, get back text and tool calls, execute the tools, repeat until the model stops. arcgent implements this loop with streaming, cancellation, context management, and multi-provider support — so you don't have to.
 
 ## Features
 
@@ -21,7 +21,7 @@ yoagent is a library for building LLM-powered agents that can use tools. It prov
 
 ## Ecosystem
 
-yoagent is part of the [Yolog](https://github.com/yologdev) ecosystem. It powers the agent backend for Yolog applications.
+arcgent is part of the [Arc](https://github.com/MKonovalov) ecosystem. It powers the agent backend for Arc applications.
 
-- **Repository:** [github.com/yologdev/yoagent](https://github.com/yologdev/yoagent)
+- **Repository:** [github.com/MKonovalov/arcgent](https://github.com/MKonovalov/arcgent)
 - **License:** MIT

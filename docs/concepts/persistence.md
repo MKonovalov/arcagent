@@ -1,11 +1,11 @@
 # State Persistence
 
-yoagent supports saving and restoring agent conversation state, enabling pause/resume workflows, state transfer between processes, and conversation checkpointing.
+arcgent supports saving and restoring agent conversation state, enabling pause/resume workflows, state transfer between processes, and conversation checkpointing.
 
 ## Save and Restore
 
 ```rust
-use yoagent::agent::Agent;
+use arcgent::agent::Agent;
 
 // After running some conversation turns...
 let json = agent.save_messages()?;

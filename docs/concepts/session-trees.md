@@ -11,7 +11,7 @@ overwritten. This is the primitive behind:
   branch stays intact
 
 ```rust
-use yoagent::{Agent, Session, provider::ModelConfig};
+use arcgent::{Agent, Session, provider::ModelConfig};
 
 let mut session = Session::new();
 
@@ -72,7 +72,7 @@ remains for single-branch persistence.
 ## GASP
 
 This tree is a natural format for the
-[GASP](https://github.com/yologdev/gasp) `transcripts/` tier — the
+[GASP](https://github.com/MKonovalov/gasp) `transcripts/` tier — the
 raw-conversation cold tier (the spec leaves its format open). The semantic event log
 lives in the [`gasp` feature](gasp.md): a recorder over the `AgentEvent`
 stream that emits a conformance-checked agent repo.

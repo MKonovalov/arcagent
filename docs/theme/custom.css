@@ -1,4 +1,4 @@
-/* Yolog Brand Theme — matches Yolog Desktop app design */
+/* Arc Brand Theme — matches Arc Desktop app design */
 
 /* ── Fonts ── */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
@@ -19,7 +19,12 @@ body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-family: 'Space Grotesk', 'Inter', sans-serif !important;
     font-weight: 600;
     letter-spacing: -0.015em;
@@ -30,11 +35,14 @@ h1 {
     letter-spacing: -0.025em;
 }
 
-code, pre, pre code, .hljs {
+code,
+pre,
+pre code,
+.hljs {
     font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !important;
 }
 
-pre > .buttons button {
+pre>.buttons button {
     font-family: 'JetBrains Mono', monospace !important;
 }
 
@@ -105,8 +113,8 @@ pre > .buttons button {
     margin-bottom: 0.3em;
 }
 
-.content main li > ul,
-.content main li > ol {
+.content main li>ul,
+.content main li>ol {
     margin-top: 0.3em;
     margin-bottom: 0.3em;
 }
@@ -122,7 +130,7 @@ pre {
 }
 
 /* Inline code */
-:not(pre) > code {
+:not(pre)>code {
     font-size: 0.87em !important;
     padding: 2px 6px !important;
     border-radius: 5px !important;
@@ -186,7 +194,7 @@ blockquote p:last-child {
 }
 
 .sidebar .sidebar-scrollbox .chapter li a,
-.sidebar .sidebar-scrollbox .chapter li > span {
+.sidebar .sidebar-scrollbox .chapter li>span {
     display: block;
     padding: 7px 14px !important;
     border-radius: 8px;
@@ -245,7 +253,7 @@ blockquote p:last-child {
 }
 
 /* ══════════════════════════════════════════════
-   LIGHT THEME — Yolog "Frosted Circuit"
+   LIGHT THEME — Arc "Frosted Circuit"
    ══════════════════════════════════════════════ */
 
 .light {
@@ -354,7 +362,7 @@ blockquote p:last-child {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-.light :not(pre) > code {
+.light :not(pre)>code {
     background: #F1F5F9;
     border: 1px solid #E2E8F0;
     color: #0E7490;
@@ -491,7 +499,8 @@ blockquote p:last-child {
    AYU / COAL
    ══════════════════════════════════════════════ */
 
-.ayu, .coal {
+.ayu,
+.coal {
     --links: #67E8F9;
     --sidebar-active: #67E8F9;
     --icons-hover: #67E8F9;
@@ -504,15 +513,18 @@ blockquote p:last-child {
     font-weight: 600;
 }
 
-.ayu a, .coal a {
+.ayu a,
+.coal a {
     color: #67E8F9;
 }
 
-.ayu .content main h1, .coal .content main h1 {
+.ayu .content main h1,
+.coal .content main h1 {
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.ayu .content main h2, .coal .content main h2 {
+.ayu .content main h2,
+.coal .content main h2 {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -545,7 +557,8 @@ blockquote p:last-child {
         font-size: 13px !important;
     }
 
-    table th, table td {
+    table th,
+    table td {
         padding: 8px 10px !important;
     }
 }

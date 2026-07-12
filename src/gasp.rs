@@ -1,15 +1,15 @@
-//! GASP bridge — record agent runs into a [GASP](https://github.com/yologdev/gasp)
+//! GASP bridge — record agent runs into a [GASP](https://github.com/MKonovalov/gasp)
 //! agent repo (feature `gasp`).
 //!
 //! GASP ("the repo is the agent") keeps an agent's durable self in a git
 //! repository: an append-only semantic event log (`state/events.jsonl`) that
 //! folds into a typed goal/run/model/tool graph, with restore = `clone +
-//! replay`. This module is the bridge between yoagent's [`AgentEvent`] stream
-//! and the [`yoagent_state`] reference runtime — **zero agent-loop changes**;
+//! replay`. This module is the bridge between arcgent's [`AgentEvent`] stream
+//! and the [`arcgent_state`] reference runtime — **zero agent-loop changes**;
 //! the recorder is just another consumer of the event stream.
 //!
 //! ```no_run
-//! use yoagent::{Agent, gasp::{GaspRecorder, GoalRef}, provider::ModelConfig};
+//! use arcgent::{Agent, gasp::{GaspRecorder, GoalRef}, provider::ModelConfig};
 //!
 //! # #[tokio::main]
 //! # async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -47,12 +47,12 @@
 use crate::types::*;
 use tokio::sync::mpsc;
 use tokio::task::JoinHandle;
-use yoagent_state::{
-    ActorRef, GitEventStore, Goal, NodeId, YoAgentModelCalled, YoAgentModelFinished,
-    YoAgentRunFinished, YoAgentRunStarted, YoAgentState, YoAgentStateAdapter, YoAgentStateSink,
-    YoAgentToolCalled, YoAgentToolFinished,
+use arcgent_state::{
+    ActorRef, GitEventStore, Goal, NodeId, arcgentModelCalled, arcgentModelFinished,
+    arcgentRunFinished, arcgentRunStarted, arcgentState, arcgentStateAdapter, arcgentStateSink,
+    arcgentToolCalled, arcgentToolFinished,
 };
-pub use yoagent_state::{GoalId, RunId, StateError};
+pub use arcgent_state::{GoalId, RunId, StateError};
 
 /// Which GASP goal recorded runs belong to (stamped into each run-boundary
 /// commit's `Goal:` trailer).
@@ -79,7 +79,7 @@ type Summarizer = std::sync::Arc<dyn Fn(&str) -> String + Send + Sync>;
 /// The repo must have a **single writer**: two live workers sharing a repo
 /// contend on the lease and can interrupt each other's runs.
 pub struct GaspRecorder {
-    state: YoAgentState<GitEventStore>,
+    state: arcgentState<GitEventStore>,
     store: GitEventStore,
     actor: ActorRef,
     goal: GoalId,
@@ -95,7 +95,7 @@ impl GaspRecorder {
         worker_id: &str,
         goal: GoalRef,
     ) -> Result<Self, StateError> {
-        let store = yoagent_state::init_agent_repo(root, agent_id, worker_id)?;
+        let store = arcgent_state::init_agent_repo(root, agent_id, worker_id)?;
         Self::with_store(store, agent_id, goal).await
     }
 
@@ -116,7 +116,7 @@ impl GaspRecorder {
         goal: GoalRef,
     ) -> Result<Self, StateError> {
         let actor = ActorRef::agent(agent_id);
-        let state = YoAgentState::load(store.clone()).await?;
+        let state = arcgentState::load(store.clone()).await?;
 
         // The open-run marker is in-memory only; `resume_open_run` restores
         // it from the log. A run left open by a crashed process is closed
@@ -206,7 +206,7 @@ impl GaspRecorder {
         JoinHandle<Result<Option<RunId>, StateError>>,
     ) {
         let (tx, rx) = mpsc::unbounded_channel();
-        let sink = YoAgentStateAdapter::new(self.state.clone(), self.actor.clone());
+        let sink = arcgentStateAdapter::new(self.state.clone(), self.actor.clone());
         let store = self.store.clone();
         let goal = self.goal.clone();
         let task = task.into();
@@ -231,7 +231,7 @@ struct RunTracking {
 /// `*_with_sender` future mid-run / the loop task panicked — `AgentEnd` is
 /// otherwise sent unconditionally).
 async fn consume(
-    sink: YoAgentStateAdapter<GitEventStore>,
+    sink: arcgentStateAdapter<GitEventStore>,
     store: GitEventStore,
     goal: GoalId,
     task: String,
@@ -281,7 +281,7 @@ async fn consume(
     if !tracking.finished {
         // Sender dropped without AgentEnd: close the run with the outcome
         // derived so far (matches the commit trailer below).
-        sink.on_run_finished(YoAgentRunFinished {
+        sink.on_run_finished(arcgentRunFinished {
             run_id: tracking.run_id.clone(),
             outcome: tracking.outcome.clone(),
             metadata: serde_json::json!({}),
@@ -298,14 +298,14 @@ async fn consume(
 /// Record a single event. Mutates tracking state; any sink error aborts
 /// recording (handled by the caller) without touching the forwarding path.
 async fn record_event(
-    sink: &YoAgentStateAdapter<GitEventStore>,
+    sink: &arcgentStateAdapter<GitEventStore>,
     summarize: &Summarizer,
     tracking: &mut RunTracking,
     event: &AgentEvent,
 ) -> Result<(), StateError> {
     match event {
         AgentEvent::AgentStart => {
-            sink.on_run_started(YoAgentRunStarted {
+            sink.on_run_started(arcgentRunStarted {
                 run_id: tracking.run_id.clone(),
                 task: tracking.task.clone(),
                 metadata: serde_json::json!({}),
@@ -323,7 +323,7 @@ async fn record_event(
                 }),
         } if tracking.started => {
             tracking.turn += 1;
-            sink.on_model_called(YoAgentModelCalled {
+            sink.on_model_called(arcgentModelCalled {
                 run_id: tracking.run_id.clone(),
                 model: model.clone(),
                 prompt_summary: if tracking.turn == 1 {
@@ -340,7 +340,7 @@ async fn record_event(
                     _ => None,
                 })
                 .unwrap_or("(no text)");
-            sink.on_model_finished(YoAgentModelFinished {
+            sink.on_model_finished(arcgentModelFinished {
                 run_id: tracking.run_id.clone(),
                 model: model.clone(),
                 output_summary: summarize(text),
@@ -351,7 +351,7 @@ async fn record_event(
         AgentEvent::ToolExecutionStart {
             tool_name, args, ..
         } if tracking.started => {
-            sink.on_tool_called(YoAgentToolCalled {
+            sink.on_tool_called(arcgentToolCalled {
                 run_id: tracking.run_id.clone(),
                 tool: tool_name.clone(),
                 input_summary: summarize(&args.to_string()),
@@ -372,7 +372,7 @@ async fn record_event(
                     _ => None,
                 })
                 .unwrap_or("(no output)");
-            sink.on_tool_finished(YoAgentToolFinished {
+            sink.on_tool_finished(arcgentToolFinished {
                 run_id: tracking.run_id.clone(),
                 tool: tool_name.clone(),
                 output_summary: summarize(text),
@@ -386,7 +386,7 @@ async fn record_event(
             tracking.outcome = "rejected".to_string();
         }
         AgentEvent::AgentEnd { .. } if tracking.started && !tracking.finished => {
-            sink.on_run_finished(YoAgentRunFinished {
+            sink.on_run_finished(arcgentRunFinished {
                 run_id: tracking.run_id.clone(),
                 outcome: tracking.outcome.clone(),
                 metadata: serde_json::json!({}),
