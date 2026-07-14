@@ -75,12 +75,15 @@ jobs:
           git config --global user.email "mike.kon@gmail.com"
           git config --global user.name "arcgent-ci"
           cargo run --example gasp_emit --features gasp -- /tmp/emitted-repo
+      # gasp is a PRIVATE repo; the default GITHUB_TOKEN cannot read sibling
+      # private repos, so checkout with a PAT that has read access to gasp.
       - name: Checkout gasp (conformance checker)
         uses: actions/checkout@v4
         with:
           repository: MKonovalov/gasp
           ref: 08a60a2ee30d6bc065ffbadec34a7993dc109fdf # pin: checker changes must not break arcgent CI silently
           path: gasp-checker
+          token: ${{ secrets.GH_PAT }}
       - name: Run conformance checker against a fresh clone (true restore)
         run: |
           # GASP restore IS `git clone` — checking the emitting worktree would
