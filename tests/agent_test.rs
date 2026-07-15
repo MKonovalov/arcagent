@@ -1,13 +1,13 @@
 //! Tests for the Agent struct (stateful wrapper).
 
-use std::sync::atomic::{AtomicUsize, Ordering};
-use std::sync::Arc;
-use tokio::sync::mpsc;
 use arcgent::agent::Agent;
 use arcgent::provider::mock::*;
 use arcgent::provider::MockProvider;
 use arcgent::provider::ModelConfig;
 use arcgent::*;
+use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::Arc;
+use tokio::sync::mpsc;
 
 #[tokio::test]
 async fn test_agent_simple_prompt() {

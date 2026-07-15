@@ -8,11 +8,11 @@
 //! Uses MockProvider so no API key is needed.
 //!   cargo run --example callbacks
 
-use std::sync::{Arc, Mutex};
 use arcgent::agent::Agent;
 use arcgent::provider::mock::*;
 use arcgent::provider::MockProvider;
 use arcgent::types::*;
+use std::sync::{Arc, Mutex};
 
 #[tokio::main]
 async fn main() {

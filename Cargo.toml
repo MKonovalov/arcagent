@@ -32,11 +32,11 @@ base64 = "0.22"
 openapiv3 = { version = "2", optional = true }
 serde_yaml_ng = { version = "0.10", optional = true }
 # 0.4.2 floor: 0.4.1 declared MSRV 1.85 but required 1.88 (let-chain)
-arcgent-state = { version = "0.4.2", optional = true }
+arcagent-state = { version = "0.4.2", optional = true }
 
 [features]
 openapi = ["dep:openapiv3", "dep:serde_yaml_ng", "reqwest/query"]
-gasp = ["dep:arcgent-state"]
+gasp = ["dep:arcagent-state"]
 
 [dev-dependencies]
 tokio = { version = "1", features = ["full", "test-util"] }

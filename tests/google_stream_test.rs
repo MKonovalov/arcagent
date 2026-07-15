@@ -5,12 +5,12 @@
 //! exercised only by the key-gated `integration_gemini.rs` live tests
 //! (issue #33).
 
+use arcgent::provider::{GoogleProvider, ModelConfig, StreamConfig, StreamProvider};
+use arcgent::types::*;
 use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, MockServer, ResponseTemplate};
-use arcgent::provider::{GoogleProvider, ModelConfig, StreamConfig, StreamProvider};
-use arcgent::types::*;
 
 const MODEL: &str = "gemini-2.5-flash";
 

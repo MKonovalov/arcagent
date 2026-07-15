@@ -1,12 +1,12 @@
 //! Integration tests against the real Google Gemini API.
 //! Run with: GEMINI_API_KEY=... cargo test --test integration_gemini -- --ignored
 
-use tokio::sync::mpsc;
-use tokio_util::sync::CancellationToken;
 use arcgent::agent_loop::{agent_loop, AgentLoopConfig};
 use arcgent::provider::{GoogleProvider, ModelConfig};
 use arcgent::tools;
 use arcgent::types::*;
+use tokio::sync::mpsc;
+use tokio_util::sync::CancellationToken;
 
 fn api_key() -> String {
     std::env::var("GEMINI_API_KEY").expect("GEMINI_API_KEY must be set")

@@ -1,12 +1,12 @@
 //! Tests for the core agent loop using MockProvider.
 
-use tokio::sync::mpsc;
-use tokio_util::sync::CancellationToken;
 use arcgent::agent_loop::{agent_loop, agent_loop_continue, AgentLoopConfig};
 use arcgent::context::ExecutionLimits;
 use arcgent::provider::mock::*;
 use arcgent::provider::MockProvider;
 use arcgent::*;
+use tokio::sync::mpsc;
+use tokio_util::sync::CancellationToken;
 
 fn make_config(provider: MockProvider) -> AgentLoopConfig {
     AgentLoopConfig {

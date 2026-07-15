@@ -3,11 +3,11 @@
 //!
 //! These tests are #[ignore] by default so they don't run in CI without a key.
 
-use tokio::sync::mpsc;
-use tokio_util::sync::CancellationToken;
 use arcgent::agent_loop::{agent_loop, AgentLoopConfig};
 use arcgent::provider::{AnthropicProvider, ModelConfig, OpenAiCompatProvider, StreamProvider};
 use arcgent::types::*;
+use tokio::sync::mpsc;
+use tokio_util::sync::CancellationToken;
 
 fn api_key() -> String {
     std::env::var("OPENCODE_API_KEY").expect("OPENCODE_API_KEY must be set")
