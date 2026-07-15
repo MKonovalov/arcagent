@@ -5,7 +5,7 @@
 //! repository: an append-only semantic event log (`state/events.jsonl`) that
 //! folds into a typed goal/run/model/tool graph, with restore = `clone +
 //! replay`. This module is the bridge between arcgent's [`AgentEvent`] stream
-//! and the [`arcgent_state`] reference runtime — **zero agent-loop changes**;
+//! and the [`arcagent_state`] reference runtime — **zero agent-loop changes**;
 //! the recorder is just another consumer of the event stream.
 //!
 //! ```no_run
@@ -45,14 +45,14 @@
 //! git workflow.
 
 use crate::types::*;
+use arcagent_state::{
+    arcagentModelCalled, arcagentModelFinished, arcagentRunFinished, arcagentRunStarted,
+    arcagentState, arcagentStateAdapter, arcagentStateSink, arcagentToolCalled,
+    arcagentToolFinished, ActorRef, GitEventStore, Goal, NodeId,
+};
+pub use arcagent_state::{GoalId, RunId, StateError};
 use tokio::sync::mpsc;
 use tokio::task::JoinHandle;
-use arcgent_state::{
-    ActorRef, GitEventStore, Goal, NodeId, arcgentModelCalled, arcgentModelFinished,
-    arcgentRunFinished, arcgentRunStarted, arcgentState, arcgentStateAdapter, arcgentStateSink,
-    arcgentToolCalled, arcgentToolFinished,
-};
-pub use arcgent_state::{GoalId, RunId, StateError};
 
 /// Which GASP goal recorded runs belong to (stamped into each run-boundary
 /// commit's `Goal:` trailer).
@@ -79,7 +79,7 @@ type Summarizer = std::sync::Arc<dyn Fn(&str) -> String + Send + Sync>;
 /// The repo must have a **single writer**: two live workers sharing a repo
 /// contend on the lease and can interrupt each other's runs.
 pub struct GaspRecorder {
-    state: arcgentState<GitEventStore>,
+    state: arcagentState<GitEventStore>,
     store: GitEventStore,
     actor: ActorRef,
     goal: GoalId,
@@ -95,7 +95,7 @@ impl GaspRecorder {
         worker_id: &str,
         goal: GoalRef,
     ) -> Result<Self, StateError> {
-        let store = arcgent_state::init_agent_repo(root, agent_id, worker_id)?;
+        let store = arcagent_state::init_agent_repo(root, agent_id, worker_id)?;
         Self::with_store(store, agent_id, goal).await
     }
 
@@ -116,7 +116,7 @@ impl GaspRecorder {
         goal: GoalRef,
     ) -> Result<Self, StateError> {
         let actor = ActorRef::agent(agent_id);
-        let state = arcgentState::load(store.clone()).await?;
+        let state = arcagentState::load(store.clone()).await?;
 
         // The open-run marker is in-memory only; `resume_open_run` restores
         // it from the log. A run left open by a crashed process is closed
@@ -206,7 +206,7 @@ impl GaspRecorder {
         JoinHandle<Result<Option<RunId>, StateError>>,
     ) {
         let (tx, rx) = mpsc::unbounded_channel();
-        let sink = arcgentStateAdapter::new(self.state.clone(), self.actor.clone());
+        let sink = arcagentStateAdapter::new(self.state.clone(), self.actor.clone());
         let store = self.store.clone();
         let goal = self.goal.clone();
         let task = task.into();
@@ -231,7 +231,7 @@ struct RunTracking {
 /// `*_with_sender` future mid-run / the loop task panicked — `AgentEnd` is
 /// otherwise sent unconditionally).
 async fn consume(
-    sink: arcgentStateAdapter<GitEventStore>,
+    sink: arcagentStateAdapter<GitEventStore>,
     store: GitEventStore,
     goal: GoalId,
     task: String,
@@ -281,7 +281,7 @@ async fn consume(
     if !tracking.finished {
         // Sender dropped without AgentEnd: close the run with the outcome
         // derived so far (matches the commit trailer below).
-        sink.on_run_finished(arcgentRunFinished {
+        sink.on_run_finished(arcagentRunFinished {
             run_id: tracking.run_id.clone(),
             outcome: tracking.outcome.clone(),
             metadata: serde_json::json!({}),
@@ -298,14 +298,14 @@ async fn consume(
 /// Record a single event. Mutates tracking state; any sink error aborts
 /// recording (handled by the caller) without touching the forwarding path.
 async fn record_event(
-    sink: &arcgentStateAdapter<GitEventStore>,
+    sink: &arcagentStateAdapter<GitEventStore>,
     summarize: &Summarizer,
     tracking: &mut RunTracking,
     event: &AgentEvent,
 ) -> Result<(), StateError> {
     match event {
         AgentEvent::AgentStart => {
-            sink.on_run_started(arcgentRunStarted {
+            sink.on_run_started(arcagentRunStarted {
                 run_id: tracking.run_id.clone(),
                 task: tracking.task.clone(),
                 metadata: serde_json::json!({}),
@@ -323,7 +323,7 @@ async fn record_event(
                 }),
         } if tracking.started => {
             tracking.turn += 1;
-            sink.on_model_called(arcgentModelCalled {
+            sink.on_model_called(arcagentModelCalled {
                 run_id: tracking.run_id.clone(),
                 model: model.clone(),
                 prompt_summary: if tracking.turn == 1 {
@@ -340,7 +340,7 @@ async fn record_event(
                     _ => None,
                 })
                 .unwrap_or("(no text)");
-            sink.on_model_finished(arcgentModelFinished {
+            sink.on_model_finished(arcagentModelFinished {
                 run_id: tracking.run_id.clone(),
                 model: model.clone(),
                 output_summary: summarize(text),
@@ -351,7 +351,7 @@ async fn record_event(
         AgentEvent::ToolExecutionStart {
             tool_name, args, ..
         } if tracking.started => {
-            sink.on_tool_called(arcgentToolCalled {
+            sink.on_tool_called(arcagentToolCalled {
                 run_id: tracking.run_id.clone(),
                 tool: tool_name.clone(),
                 input_summary: summarize(&args.to_string()),
@@ -372,7 +372,7 @@ async fn record_event(
                     _ => None,
                 })
                 .unwrap_or("(no output)");
-            sink.on_tool_finished(arcgentToolFinished {
+            sink.on_tool_finished(arcagentToolFinished {
                 run_id: tracking.run_id.clone(),
                 tool: tool_name.clone(),
                 output_summary: summarize(text),
@@ -386,7 +386,7 @@ async fn record_event(
             tracking.outcome = "rejected".to_string();
         }
         AgentEvent::AgentEnd { .. } if tracking.started && !tracking.finished => {
-            sink.on_run_finished(arcgentRunFinished {
+            sink.on_run_finished(arcagentRunFinished {
                 run_id: tracking.run_id.clone(),
                 outcome: tracking.outcome.clone(),
                 metadata: serde_json::json!({}),
