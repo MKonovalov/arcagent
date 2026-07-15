@@ -12,9 +12,11 @@ create-missing = false
 [output.html]
 default-theme = "light"
 preferred-dark-theme = "navy"
-git-repository-url = "https://github.com/MKonovalov/arcgent"
-edit-url-template = "https://github.com/MKonovalov/arcgent/edit/main/{path}"
-site-url = "/arcgent/"
+git-repository-url = "https://github.com/MKonovalov/arcagent"
+edit-url-template = "https://github.com/MKonovalov/arcagent/edit/main/{path}"
+# Hosted under the public arcpedia-journal Pages site (private repo can't use
+# GitHub Pages on the free plan). Must match docs.yml destination_dir.
+site-url = "/arcpedia-journal/docs/arcagent/"
 additional-css = ["docs/theme/custom.css"]
 
 [output.html.search]
