@@ -45,14 +45,14 @@
 //! git workflow.
 
 use crate::types::*;
-use tokio::sync::mpsc;
-use tokio::task::JoinHandle;
 use arcgent_state::{
-    ActorRef, GitEventStore, Goal, NodeId, arcgentModelCalled, arcgentModelFinished,
-    arcgentRunFinished, arcgentRunStarted, arcgentState, arcgentStateAdapter, arcgentStateSink,
-    arcgentToolCalled, arcgentToolFinished,
+    arcgentModelCalled, arcgentModelFinished, arcgentRunFinished, arcgentRunStarted, arcgentState,
+    arcgentStateAdapter, arcgentStateSink, arcgentToolCalled, arcgentToolFinished, ActorRef,
+    GitEventStore, Goal, NodeId,
 };
 pub use arcgent_state::{GoalId, RunId, StateError};
+use tokio::sync::mpsc;
+use tokio::task::JoinHandle;
 
 /// Which GASP goal recorded runs belong to (stamped into each run-boundary
 /// commit's `Goal:` trailer).

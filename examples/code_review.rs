@@ -12,11 +12,11 @@
 //! Try it on this repo:
 //!   ANTHROPIC_API_KEY=sk-... cargo run --example code_review -- src/shared_state.rs
 
-use std::sync::{Arc, Mutex};
 use arcgent::provider::{AnthropicProvider, ModelConfig, StreamProvider};
 use arcgent::shared_state::SharedState;
 use arcgent::sub_agent::SubAgentTool;
 use arcgent::*;
+use std::sync::{Arc, Mutex};
 
 #[tokio::main]
 async fn main() {

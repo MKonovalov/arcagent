@@ -1,13 +1,13 @@
 //! Tests for SharedState and its integration with SubAgentTool.
 
-use std::sync::Arc;
-use tokio_util::sync::CancellationToken;
 use arcgent::provider::mock::*;
 use arcgent::provider::MockProvider;
 use arcgent::provider::ModelConfig;
 use arcgent::shared_state::SharedState;
 use arcgent::sub_agent::SubAgentTool;
 use arcgent::*;
+use std::sync::Arc;
+use tokio_util::sync::CancellationToken;
 
 // ---------------------------------------------------------------------------
 // Integration: parent stores a value, sub-agent reads it via shared_state tool

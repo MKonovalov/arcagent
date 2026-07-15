@@ -4,14 +4,14 @@
 //! `build_request_body` can't reach: stop-reason mapping from SSE events and
 //! the request headers actually sent on the wire.
 
-use tokio::sync::mpsc;
-use tokio_util::sync::CancellationToken;
-use wiremock::matchers::{header, method, path};
-use wiremock::{Mock, MockServer, Request, ResponseTemplate};
 use arcgent::provider::{
     AnthropicCompat, AnthropicProvider, ModelConfig, StreamConfig, StreamProvider,
 };
 use arcgent::types::*;
+use tokio::sync::mpsc;
+use tokio_util::sync::CancellationToken;
+use wiremock::matchers::{header, method, path};
+use wiremock::{Mock, MockServer, Request, ResponseTemplate};
 
 /// Matcher: the request must NOT carry the given header.
 struct HeaderAbsent(&'static str);
