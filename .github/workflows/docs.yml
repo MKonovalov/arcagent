@@ -1,5 +1,15 @@
 name: Deploy Documentation
 
+# Build the mdBook locally, then publish the rendered HTML into the PUBLIC
+# repo MKonovalov/arcpedia-journal (GitHub Pages is not available for private
+# repos on the free plan, so docs are hosted from the public journal repo).
+#
+# Required secret in THIS repo (arcagent):
+#   DOCS_PUBLISH_PAT - fine-grained PAT with Contents: Read and Write on
+#                      MKonovalov/arcpedia-journal
+# Also required: in arcpedia-journal -> Settings -> Pages, set source branch
+# to `gh-pages` (the repo's default) and folder `/ (root)` or `/docs`.
+
 on:
   push:
     branches: [main]
@@ -10,41 +20,35 @@ on:
   workflow_dispatch:
 
 permissions:
-  pages: write
-  id-token: write
   contents: read
 
 concurrency:
-  group: "pages"
+  group: "docs"
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-and-publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - name: Install mdBook
         run: |
-          mkdir -p $HOME/.local/bin
-          curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.43/mdbook-v0.4.43-x86_64-unknown-linux-gnu.tar.gz | tar -xz -C $HOME/.local/bin
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          mkdir -p "$HOME/.local/bin"
+          curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.43/mdbook-v0.4.43-x86_64-unknown-linux-gnu.tar.gz | tar -xz -C "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Build book
         run: mdbook build
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Publish to arcpedia-journal (gh-pages)
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: book
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          # PAT must have write access to the TARGET public repo.
+          personal_token: ${{ secrets.DOCS_PUBLISH_PAT }}
+          external_repository: MKonovalov/arcpedia-journal
+          publish_branch: gh-pages
+          # Keep the journal's existing content; drop the book under /docs/arcagent.
+          publish_dir: ./book
+          destination_dir: docs/arcagent
+          commit_message: "docs(arcagent): publish mdBook from arcagent@${{ github.sha }}"
