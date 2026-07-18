@@ -1,4 +1,5 @@
 name: CI
+# retrigger-anchor: force CI run after GH_PAT + arcgent-state publish
 
 on:
   push:
