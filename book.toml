@@ -2,8 +2,8 @@
 authors = ["ArcLumen Team"]
 language = "en"
 src = "docs"
-title = "arcgent Documentation"
-description = "Documentation for arcgent - simple, effective agent loop in Rust"
+title = "arcagent Documentation"
+description = "Documentation for arcagent - simple, effective agent loop in Rust"
 
 [build]
 build-dir = "book"

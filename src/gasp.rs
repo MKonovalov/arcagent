@@ -4,12 +4,12 @@
 //! GASP ("the repo is the agent") keeps an agent's durable self in a git
 //! repository: an append-only semantic event log (`state/events.jsonl`) that
 //! folds into a typed goal/run/model/tool graph, with restore = `clone +
-//! replay`. This module is the bridge between arcgent's [`AgentEvent`] stream
+//! replay`. This module is the bridge between arcagent's [`AgentEvent`] stream
 //! and the [`arcagent_state`] reference runtime — **zero agent-loop changes**;
 //! the recorder is just another consumer of the event stream.
 //!
 //! ```no_run
-//! use arcgent::{Agent, gasp::{GaspRecorder, GoalRef}, provider::ModelConfig};
+//! use arcagent::{Agent, gasp::{GaspRecorder, GoalRef}, provider::ModelConfig};
 //!
 //! # #[tokio::main]
 //! # async fn main() -> Result<(), Box<dyn std::error::Error>> {

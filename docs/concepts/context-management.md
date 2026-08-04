@@ -1,13 +1,13 @@
 # Context Management
 
-Long-running agents accumulate messages that exceed the model's context window. arcgent provides token tracking, overflow detection, tiered compaction, and execution limits.
+Long-running agents accumulate messages that exceed the model's context window. arcagent provides token tracking, overflow detection, tiered compaction, and execution limits.
 
 ## Token Estimation
 
 Fast estimation without external tokenizer dependencies:
 
 ```rust
-use arcgent::context::{estimate_tokens, message_tokens, total_tokens};
+use arcagent::context::{estimate_tokens, message_tokens, total_tokens};
 
 estimate_tokens("Hello world");          // ~3 tokens (chars / 4)
 message_tokens(&agent_message);          // estimate for a single message
@@ -19,7 +19,7 @@ total_tokens(&messages);                 // estimate for all messages
 `ContextTracker` combines real token counts from provider responses with estimation for new messages — more accurate than pure estimation:
 
 ```rust
-use arcgent::context::ContextTracker;
+use arcagent::context::ContextTracker;
 
 let mut tracker = ContextTracker::new();
 
@@ -37,14 +37,14 @@ When no usage data is available, it falls back to chars/4 estimation.
 
 ## Context Overflow Detection
 
-When the context exceeds a model's window, providers return overflow errors. arcgent detects these automatically across all major providers.
+When the context exceeds a model's window, providers return overflow errors. arcagent detects these automatically across all major providers.
 
 ### HTTP-level detection
 
 Providers that check before streaming (Google, Bedrock, Vertex) return `ProviderError::ContextOverflow`:
 
 ```rust
-use arcgent::provider::ProviderError;
+use arcagent::provider::ProviderError;
 
 match agent.prompt("...").await {
     // The loop already handles this — but you can also match it:
@@ -69,7 +69,7 @@ if message.is_context_overflow() {
 
 ### Handling overflow in your application
 
-arcgent provides the detection and building blocks. Your application wires the compaction strategy:
+arcagent provides the detection and building blocks. Your application wires the compaction strategy:
 
 ```rust
 // Proactive: check before each prompt
@@ -84,7 +84,7 @@ if tokens > context_window - reserve {
 //   compact, then retry with agent.continue_loop()
 ```
 
-For LLM-based summarization (asking the model to summarize old messages), implement that in your application layer — arcgent provides `replace_messages()` and `compact_messages()` as building blocks.
+For LLM-based summarization (asking the model to summarize old messages), implement that in your application layer — arcagent provides `replace_messages()` and `compact_messages()` as building blocks.
 
 ## ContextConfig
 

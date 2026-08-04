@@ -61,6 +61,6 @@ jobs:
           # arc-evolve/, journal/).
           publish_dir: ./book
           destination_dir: docs/arcagent
-          user_name: arcgent-ci
+          user_name: arcagent-ci
           user_email: mike.kon@gmail.com
           commit_message: "docs(arcagent): publish mdBook from arcagent@${{ github.sha }}"

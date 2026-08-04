@@ -4,14 +4,14 @@
 //! Run with: cargo run --example gasp_emit --features gasp -- [repo-path]
 //!
 //! The emitted repo passes the GASP conformance checker
-//! (github.com/MKonovalov/gasp) — arcgent's CI verifies exactly that. Point it
+//! (github.com/MKonovalov/gasp) — arcagent's CI verifies exactly that. Point it
 //! at a path of your choice and inspect `state/events.jsonl` and `git log`
 //! afterwards.
 
-use arcgent::gasp::{GaspRecorder, GoalRef};
-use arcgent::provider::mock::*;
-use arcgent::provider::{MockProvider, ModelConfig};
-use arcgent::*;
+use arcagent::gasp::{GaspRecorder, GoalRef};
+use arcagent::provider::mock::*;
+use arcagent::provider::{MockProvider, ModelConfig};
+use arcagent::*;
 
 /// A tiny tool so the log shows tool-call pairs, not just model calls.
 struct TouchTool;
@@ -48,7 +48,7 @@ impl AgentTool for TouchTool {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let repo = std::env::args()
         .nth(1)
-        .unwrap_or_else(|| "/tmp/arcgent-gasp-demo".into());
+        .unwrap_or_else(|| "/tmp/arcagent-gasp-demo".into());
 
     let recorder = GaspRecorder::init(
         &repo,

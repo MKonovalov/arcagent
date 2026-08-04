@@ -6,9 +6,9 @@
 //! # Example
 //!
 //! ```rust,no_run
-//! use arcgent::openapi::{OpenApiToolAdapter, OpenApiConfig, OperationFilter};
+//! use arcagent::openapi::{OpenApiToolAdapter, OpenApiConfig, OperationFilter};
 //!
-//! # fn example() -> Result<(), arcgent::openapi::OpenApiError> {
+//! # fn example() -> Result<(), arcagent::openapi::OpenApiError> {
 //! let spec = std::fs::read_to_string("openapi.yaml")?;
 //! let config = OpenApiConfig::new()
 //!     .with_bearer_token("sk-...");

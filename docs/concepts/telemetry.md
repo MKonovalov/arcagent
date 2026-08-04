@@ -1,6 +1,6 @@
 # Telemetry
 
-arcgent instruments the loop with [`tracing`](https://docs.rs/tracing) **spans**
+arcagent instruments the loop with [`tracing`](https://docs.rs/tracing) **spans**
 — structured, timed, nested units your observability stack can consume. With
 no subscriber installed the overhead is near-zero (a cached per-callsite
 interest check); nothing is exported unless you opt in.
@@ -31,7 +31,7 @@ Run `cargo run --example telemetry` to see it.
 
 ## Production: OpenTelemetry
 
-The OTel bridge is **application-side** — arcgent needs no OTel dependency
+The OTel bridge is **application-side** — arcagent needs no OTel dependency
 (that's the point of `tracing`). Install the
 [`tracing-opentelemetry`](https://docs.rs/tracing-opentelemetry) layer and the
 same spans flow to any OTLP backend — Datadog, Grafana Tempo, Honeycomb,
@@ -50,13 +50,13 @@ let provider = opentelemetry_sdk::trace::SdkTracerProvider::builder()
     .build();
 
 let subscriber = tracing_subscriber::registry()
-    .with(tracing_opentelemetry::layer().with_tracer(provider.tracer("arcgent-app")));
+    .with(tracing_opentelemetry::layer().with_tracer(provider.tracer("arcagent-app")));
 tracing::subscriber::set_global_default(subscriber)?;
 ```
 
 (The OTel crates rework their builder APIs between releases — if this snippet
 drifts, the authoritative wiring is the
-[`tracing-opentelemetry` docs](https://docs.rs/tracing-opentelemetry); arcgent
+[`tracing-opentelemetry` docs](https://docs.rs/tracing-opentelemetry); arcagent
 only emits standard `tracing` spans and does not depend on OTel.)
 
 Because these are ordinary `tracing` spans, an agent call nests inside your

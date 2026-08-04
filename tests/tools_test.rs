@@ -2,10 +2,10 @@
 
 use base64::Engine;
 use tokio_util::sync::CancellationToken;
-use arcgent::tools::edit::EditFileTool;
-use arcgent::tools::list::ListFilesTool;
-use arcgent::tools::*;
-use arcgent::types::*;
+use arcagent::tools::edit::EditFileTool;
+use arcagent::tools::list::ListFilesTool;
+use arcagent::tools::*;
+use arcagent::types::*;
 
 /// Helper to build a ToolContext for tests.
 fn ctx(name: &str) -> ToolContext {
@@ -101,14 +101,14 @@ async fn test_bash_cancel() {
 
 #[tokio::test]
 async fn test_read_write_file() {
-    let tmp = std::env::temp_dir().join("arcgent-test-rw.txt");
+    let tmp = std::env::temp_dir().join("arcagent-test-rw.txt");
     let path = tmp.to_str().unwrap();
 
     // Write
     let write_tool = WriteFileTool::new();
     let result = write_tool
         .execute(
-            serde_json::json!({"path": path, "content": "hello from arcgent"}),
+            serde_json::json!({"path": path, "content": "hello from arcagent"}),
             ctx("write_file"),
         )
         .await
@@ -131,7 +131,7 @@ async fn test_read_write_file() {
         Content::Text { text } => text,
         _ => panic!("expected text"),
     };
-    assert!(text.contains("hello from arcgent"));
+    assert!(text.contains("hello from arcagent"));
 
     // Cleanup
     let _ = std::fs::remove_file(tmp);
@@ -139,7 +139,7 @@ async fn test_read_write_file() {
 
 #[tokio::test]
 async fn test_read_file_with_offset_limit() {
-    let tmp = std::env::temp_dir().join("arcgent-test-lines.txt");
+    let tmp = std::env::temp_dir().join("arcagent-test-lines.txt");
     let path = tmp.to_str().unwrap();
 
     let content = (1..=20)
@@ -183,7 +183,7 @@ async fn test_read_file_not_found() {
 
 #[tokio::test]
 async fn test_write_creates_directories() {
-    let tmp = std::env::temp_dir().join("arcgent-test-nested/deep/dir/file.txt");
+    let tmp = std::env::temp_dir().join("arcagent-test-nested/deep/dir/file.txt");
     let path = tmp.to_str().unwrap();
 
     let tool = WriteFileTool::new();
@@ -198,12 +198,12 @@ async fn test_write_creates_directories() {
     assert!(tmp.exists());
 
     // Cleanup
-    let _ = std::fs::remove_dir_all(std::env::temp_dir().join("arcgent-test-nested"));
+    let _ = std::fs::remove_dir_all(std::env::temp_dir().join("arcagent-test-nested"));
 }
 
 #[tokio::test]
 async fn test_search_pattern() {
-    let tmp_dir = std::env::temp_dir().join("arcgent-test-search");
+    let tmp_dir = std::env::temp_dir().join("arcagent-test-search");
     let _ = std::fs::create_dir_all(&tmp_dir);
     std::fs::write(tmp_dir.join("a.txt"), "hello world\nfoo bar\nhello again").unwrap();
     std::fs::write(tmp_dir.join("b.txt"), "no match here\nhello there").unwrap();
@@ -226,7 +226,7 @@ async fn test_search_pattern() {
 
 #[tokio::test]
 async fn test_search_no_matches() {
-    let tmp_dir = std::env::temp_dir().join("arcgent-test-search-empty");
+    let tmp_dir = std::env::temp_dir().join("arcagent-test-search-empty");
     let _ = std::fs::create_dir_all(&tmp_dir);
     std::fs::write(tmp_dir.join("a.txt"), "nothing interesting").unwrap();
 
@@ -252,7 +252,7 @@ async fn test_search_no_matches() {
 
 #[tokio::test]
 async fn test_edit_file() {
-    let tmp = std::env::temp_dir().join("arcgent-test-edit.txt");
+    let tmp = std::env::temp_dir().join("arcagent-test-edit.txt");
     let path = tmp.to_str().unwrap();
     std::fs::write(&tmp, "fn main() {\n    println!(\"hello\");\n}\n").unwrap();
 
@@ -281,7 +281,7 @@ async fn test_edit_file() {
 
 #[tokio::test]
 async fn test_edit_file_no_match() {
-    let tmp = std::env::temp_dir().join("arcgent-test-edit-nomatch.txt");
+    let tmp = std::env::temp_dir().join("arcagent-test-edit-nomatch.txt");
     let path = tmp.to_str().unwrap();
     std::fs::write(&tmp, "hello world\n").unwrap();
     let tool = EditFileTool::new();
@@ -297,7 +297,7 @@ async fn test_edit_file_no_match() {
 
 #[tokio::test]
 async fn test_list_files_tool() {
-    let tmp_dir = std::env::temp_dir().join("arcgent-test-list2");
+    let tmp_dir = std::env::temp_dir().join("arcagent-test-list2");
     let _ = std::fs::create_dir_all(tmp_dir.join("sub"));
     std::fs::write(tmp_dir.join("a.rs"), "").unwrap();
     std::fs::write(tmp_dir.join("sub/c.rs"), "").unwrap();
@@ -319,7 +319,7 @@ async fn test_list_files_tool() {
 
 #[tokio::test]
 async fn test_read_file_line_numbers() {
-    let tmp = std::env::temp_dir().join("arcgent-test-lineno2.txt");
+    let tmp = std::env::temp_dir().join("arcagent-test-lineno2.txt");
     let path = tmp.to_str().unwrap();
     std::fs::write(&tmp, "first\nsecond\nthird\n").unwrap();
     let tool = ReadFileTool::new();
@@ -348,7 +348,7 @@ async fn test_bash_blocked_command() {
 
 #[tokio::test]
 async fn test_default_tools_complete() {
-    let tools = arcgent::tools::default_tools();
+    let tools = arcagent::tools::default_tools();
     let names: Vec<&str> = tools.iter().map(|t| t.name()).collect();
     assert_eq!(names.len(), 6);
     assert!(names.contains(&"bash"));
@@ -372,7 +372,7 @@ async fn test_read_image_file() {
         0xAE, 0x42, 0x60, 0x82,
     ];
 
-    let tmp = std::env::temp_dir().join("arcgent-test-image.png");
+    let tmp = std::env::temp_dir().join("arcagent-test-image.png");
     std::fs::write(&tmp, &png_bytes).unwrap();
 
     let tool = ReadFileTool::new();
@@ -402,7 +402,7 @@ async fn test_read_image_file() {
 
 #[tokio::test]
 async fn test_read_jpeg_file() {
-    let tmp = std::env::temp_dir().join("arcgent-test-image.jpg");
+    let tmp = std::env::temp_dir().join("arcagent-test-image.jpg");
     std::fs::write(&tmp, b"fake-jpeg-data").unwrap();
 
     let tool = ReadFileTool::new();
@@ -427,7 +427,7 @@ async fn test_read_jpeg_file() {
 #[tokio::test]
 async fn test_read_text_file_unchanged() {
     // Non-image files should still return Content::Text
-    let tmp = std::env::temp_dir().join("arcgent-test-notimage.txt");
+    let tmp = std::env::temp_dir().join("arcagent-test-notimage.txt");
     std::fs::write(&tmp, "just text").unwrap();
 
     let tool = ReadFileTool::new();

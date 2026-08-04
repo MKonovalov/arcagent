@@ -1,12 +1,12 @@
-# arcgent
+# arcagent
 
 **Simple, effective agent loop in Rust.**
 
-arcgent is a library for building LLM-powered agents that can use tools. It provides the core loop — prompt the model, execute tool calls, feed results back — and gets out of your way.
+arcagent is a library for building LLM-powered agents that can use tools. It provides the core loop — prompt the model, execute tool calls, feed results back — and gets out of your way.
 
 ## Philosophy
 
-**The loop is the product.** An agent is just a loop: send messages to an LLM, get back text and tool calls, execute the tools, repeat until the model stops. arcgent implements this loop with streaming, cancellation, context management, and multi-provider support — so you don't have to.
+**The loop is the product.** An agent is just a loop: send messages to an LLM, get back text and tool calls, execute the tools, repeat until the model stops. arcagent implements this loop with streaming, cancellation, context management, and multi-provider support — so you don't have to.
 
 ## Features
 
@@ -21,7 +21,7 @@ arcgent is a library for building LLM-powered agents that can use tools. It prov
 
 ## Ecosystem
 
-arcgent is part of the [Arc](https://github.com/MKonovalov) ecosystem. It powers the agent backend for Arc applications.
+arcagent is part of the [Arc](https://github.com/MKonovalov) ecosystem. It powers the agent backend for Arc applications.
 
-- **Repository:** [github.com/MKonovalov/arcgent](https://github.com/MKonovalov/arcgent)
+- **Repository:** [github.com/MKonovalov/arcagent](https://github.com/MKonovalov/arcagent)
 - **License:** MIT

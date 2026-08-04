@@ -5,7 +5,7 @@
 ## Usage
 
 ```rust
-use arcgent::provider::ModelConfig;
+use arcagent::provider::ModelConfig;
 
 let agent = Agent::from_config(ModelConfig::anthropic("claude-sonnet-5", "Claude Sonnet 5"));
 ```

@@ -78,7 +78,7 @@ Errors are converted to `ToolResult` with `is_error: true` and sent back to the 
 ## Implementing a Custom Tool
 
 ```rust
-use arcgent::types::*;
+use arcagent::types::*;
 use async_trait::async_trait;
 
 pub struct WeatherTool;
@@ -126,7 +126,7 @@ impl AgentTool for WeatherTool {
 Register custom tools alongside defaults:
 
 ```rust
-use arcgent::tools::default_tools;
+use arcagent::tools::default_tools;
 
 let mut tools = default_tools();
 tools.push(Box::new(WeatherTool));
@@ -179,7 +179,7 @@ pub type ToolUpdateFn = Arc<dyn Fn(ToolResult) + Send + Sync>;
 Call `on_update` whenever you have progress to report:
 
 ```rust
-use arcgent::types::*;
+use arcagent::types::*;
 
 struct DataProcessorTool;
 
@@ -288,9 +288,9 @@ Use `on_progress` for simple status text. Use `on_update` when you need structur
 Here's a complete example: a CLI agent with a deploy tool that streams progress. The human sees real-time output while the LLM only gets the final result.
 
 ```rust
-use arcgent::agent::Agent;
-use arcgent::provider::ModelConfig;
-use arcgent::types::*;
+use arcagent::agent::Agent;
+use arcagent::provider::ModelConfig;
+use arcagent::types::*;
 
 /// A tool that deploys an app and streams each step.
 struct DeployTool;
@@ -409,7 +409,7 @@ The human sees each step as it happens. The LLM only sees "Successfully deployed
 
 ### How agents benefit
 
-When an AI agent (like a coding assistant) uses arcgent, streaming tool output helps in two ways:
+When an AI agent (like a coding assistant) uses arcagent, streaming tool output helps in two ways:
 
 1. **Human oversight** — The human watching the agent work sees real-time progress instead of waiting for a tool to finish. A bash command running `cargo build` can stream compiler output as it happens, so the human can interrupt early if something is wrong.
 
@@ -430,8 +430,8 @@ When the LLM returns multiple tool calls in a single response (e.g., "read file 
 ### Configuration
 
 ```rust
-use arcgent::agent::Agent;
-use arcgent::types::ToolExecutionStrategy;
+use arcagent::agent::Agent;
+use arcagent::types::ToolExecutionStrategy;
 
 // Default — parallel (fastest)
 let agent = Agent::from_config(ModelConfig::anthropic("claude-sonnet-5", "Claude Sonnet 5"));
@@ -456,11 +456,11 @@ Steering messages are always checked between execution units (between each tool 
 ## Permissions: Tool Middleware
 
 Every tool call can be gated by an async **middleware chain** — the mechanism
-behind permission prompts, policy engines, and argument rewriting. arcgent
+behind permission prompts, policy engines, and argument rewriting. arcagent
 ships the hook, not a policy: with no middleware installed, every call runs.
 
 ```rust
-use arcgent::{ToolCallRequest, ToolDecision, ToolMiddleware};
+use arcagent::{ToolCallRequest, ToolDecision, ToolMiddleware};
 
 struct ReadOnlyPolicy;
 

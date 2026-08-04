@@ -1,13 +1,13 @@
 //! MCP (Model Context Protocol) client support.
 //!
-//! Connect to MCP tool servers and use their tools seamlessly within arcgent.
+//! Connect to MCP tool servers and use their tools seamlessly within arcagent.
 //!
 //! # Example
 //!
 //! ```rust,no_run
-//! use arcgent::mcp::McpClient;
+//! use arcagent::mcp::McpClient;
 //!
-//! # async fn example() -> Result<(), arcgent::mcp::McpError> {
+//! # async fn example() -> Result<(), arcagent::mcp::McpError> {
 //! // Connect to an MCP server via stdio
 //! let client = McpClient::connect_stdio("npx", &["-y", "@modelcontextprotocol/server-filesystem", "/tmp"], None).await?;
 //! # Ok(())

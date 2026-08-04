@@ -9,10 +9,10 @@
 //!   cargo run --example callbacks
 
 use std::sync::{Arc, Mutex};
-use arcgent::agent::Agent;
-use arcgent::provider::mock::*;
-use arcgent::provider::MockProvider;
-use arcgent::types::*;
+use arcagent::agent::Agent;
+use arcagent::provider::mock::*;
+use arcagent::provider::MockProvider;
+use arcagent::types::*;
 
 #[tokio::main]
 async fn main() {
@@ -70,7 +70,7 @@ async fn main() {
         }
     }
 
-    let mut agent = Agent::from_provider(provider, arcgent::provider::ModelConfig::mock())
+    let mut agent = Agent::from_provider(provider, arcagent::provider::ModelConfig::mock())
         .with_system_prompt("You are helpful.")
         .with_tools(vec![Box::new(GreetTool)])
         // Limit to 5 turns (plenty for this example)

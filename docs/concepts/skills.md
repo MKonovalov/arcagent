@@ -44,10 +44,10 @@ For complex diffs: `bash {baseDir}/scripts/diff_summary.sh`
 ## Loading skills
 
 ```rust
-use arcgent::SkillSet;
+use arcagent::SkillSet;
 
 // Load from multiple directories (later dirs override earlier on name conflict)
-let skills = SkillSet::load(&["./skills", "~/.arcgent/skills"])?;
+let skills = SkillSet::load(&["./skills", "~/.arcagent/skills"])?;
 
 // Or load from a single directory with a label
 let workspace_skills = SkillSet::load_dir("./skills", "workspace")?;
@@ -56,7 +56,7 @@ let workspace_skills = SkillSet::load_dir("./skills", "workspace")?;
 ## Using with Agent
 
 ```rust
-use arcgent::{Agent, SkillSet};
+use arcagent::{Agent, SkillSet};
 
 let skills = SkillSet::load(&["./skills"])?;
 
@@ -82,13 +82,13 @@ When the agent encounters a task matching a skill, it reads the SKILL.md using t
 
 ## Precedence
 
-When loading from multiple directories, later directories take precedence. A skill in `./skills/` overrides the same-named skill in `~/.arcgent/skills/`.
+When loading from multiple directories, later directories take precedence. A skill in `./skills/` overrides the same-named skill in `~/.arcagent/skills/`.
 
 You can also merge skill sets explicitly:
 
 ```rust
-let mut base = SkillSet::load_dir("/usr/share/arcgent/skills", "bundled")?;
-let user = SkillSet::load_dir("~/.arcgent/skills", "user")?;
+let mut base = SkillSet::load_dir("/usr/share/arcagent/skills", "bundled")?;
+let user = SkillSet::load_dir("~/.arcagent/skills", "user")?;
 let workspace = SkillSet::load_dir("./skills", "workspace")?;
 
 base.merge(user);
@@ -97,7 +97,7 @@ base.merge(workspace); // workspace wins on conflict
 
 ## Compatibility
 
-By following the AgentSkills standard, skills written for arcgent work with Claude Code, Codex CLI, Gemini CLI, Cursor, OpenCode, Goose, and any other compatible agent. Write once, use everywhere.
+By following the AgentSkills standard, skills written for arcagent work with Claude Code, Codex CLI, Gemini CLI, Cursor, OpenCode, Goose, and any other compatible agent. Write once, use everywhere.
 
 ## Design philosophy
 

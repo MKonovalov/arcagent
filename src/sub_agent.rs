@@ -14,8 +14,8 @@
 //! # Example
 //!
 //! ```rust,no_run
-//! use arcgent::sub_agent::SubAgentTool;
-//! use arcgent::provider::ModelConfig;
+//! use arcagent::sub_agent::SubAgentTool;
+//! use arcagent::provider::ModelConfig;
 //!
 //! // Provider selected from the config's protocol; key from ANTHROPIC_API_KEY.
 //! let researcher = SubAgentTool::from_config(

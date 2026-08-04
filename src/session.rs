@@ -13,7 +13,7 @@
 //! # Typical flow
 //!
 //! ```no_run
-//! use arcgent::{Agent, Session, provider::ModelConfig};
+//! use arcagent::{Agent, Session, provider::ModelConfig};
 //!
 //! # #[tokio::main]
 //! # async fn main() {
