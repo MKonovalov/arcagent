@@ -2,9 +2,16 @@ name: Deploy Documentation
 
 # The arcagent repo is PRIVATE, and the free GitHub plan cannot host GitHub
 # Pages for private repos (enabling Pages returns HTTP 422). So the mdBook
-# docs are built here and pushed into the PUBLIC repo MKonovalov/arcpedia-journal
-# (which already serves GitHub Pages from its `gh-pages` branch), under the
-# `docs/arcagent` subdir — alongside arc-evolve, journal, etc.
+# docs are built here and handed off to the PUBLIC repo
+# MKonovalov/arcpedia-journal, which serves GitHub Pages from its `gh-pages`
+# branch (alongside arc-evolve, journal, etc.).
+#
+# SINGLE-OWNER RULE (gh-pages is contested by two publishers otherwise):
+#   - arcagent is the SOLE writer of the staging branch `arcagent-docs`.
+#   - arcpedia-journal's deploy script is the SOLE writer of `gh-pages` and
+#     INGESTS `arcagent-docs/docs/arcagent` into its build before pushing.
+# arcagent therefore NEVER pushes gh-pages directly — that avoids the race
+# with the journal deploy that previously clobbered these docs.
 #
 # The write token is the shared arcpedia GitHub PAT resolved from Bitwarden
 # Secrets Manager, exactly as ci.yml does for the gasp checkout (convention:
@@ -50,15 +57,15 @@ jobs:
       - name: Build book
         run: mdbook build
 
-      - name: Publish to arcpedia-journal (gh-pages)
+      # Publish to the arcagent-OWNED staging branch. arcagent is the only
+      # writer here, so there is no race. arcpedia-journal's deploy script is
+      # responsible for copying docs/arcagent from this branch into gh-pages.
+      - name: Publish to arcpedia-journal staging branch (arcagent-docs)
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ env.ARCPEDIA_GITHUB_TOKEN }}
           external_repository: MKonovalov/arcpedia-journal
-          publish_branch: gh-pages
-          # Drop the rendered book under /docs/arcagent, preserving everything
-          # else already on the journal's gh-pages branch (index.html, .nojekyll,
-          # arc-evolve/, journal/).
+          publish_branch: arcagent-docs
           publish_dir: ./book
           destination_dir: docs/arcagent
           user_name: arcagent-ci

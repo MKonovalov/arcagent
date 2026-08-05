@@ -4,6 +4,9 @@
 //! and drives `agent_loop` directly in the current task — spans created in
 //! separately-spawned tasks would not reach this scoped subscriber.
 
+use arcgent::provider::mock::*;
+use arcgent::provider::MockProvider;
+use arcgent::*;
 use std::sync::{Arc, Mutex};
 use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;

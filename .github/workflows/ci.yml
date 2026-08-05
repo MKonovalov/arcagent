@@ -68,6 +68,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # MKonovalov/gasp is a PRIVATE repo; the default GITHUB_TOKEN can't see
+      # it (404 "Repository not found"). Pull a PAT with repo access from BWS
+      # and use it for the gasp checkout below. Convention: ARCPEDIA_GITHUB_TOKEN
+      # (UUID e6c364e3-1f29-4904-bf14-b486013a7f9d) is the shared github access
+      # token; sm-action resolves it into the GASP_GITHUB_TOKEN env var.
+      - name: Resolve gasp checkout token from BWS
+        uses: bitwarden/sm-action@v3.0.1
+        with:
+          access_token: ${{ secrets.BWS_ACCESS_TOKEN }}
+          cloud_region: eu   # account is vault.bitwarden.eu; default (us) -> invalid_client
+          secrets: |
+            e6c364e3-1f29-4904-bf14-b486013a7f9d > GASP_GITHUB_TOKEN
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - name: Emit agent repo via the gasp bridge
@@ -81,6 +93,7 @@ jobs:
           repository: MKonovalov/gasp
           ref: 08a60a2ee30d6bc065ffbadec34a7993dc109fdf # pin: checker changes must not break arcagent CI silently
           path: gasp-checker
+          token: ${{ env.GASP_GITHUB_TOKEN }}
       - name: Run conformance checker against a fresh clone (true restore)
         run: |
           # GASP restore IS `git clone` — checking the emitting worktree would
