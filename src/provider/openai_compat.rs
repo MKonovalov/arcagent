@@ -192,6 +192,42 @@ impl StreamProvider for OpenAiCompatProvider {
                             }
                         }
                         Some(Err(e)) => {
+                            // Some OpenAI-compatible providers (e.g. `tencent/hy3:free`
+                            // via OpenRouter, MiniMax per arc-evolve Issue #222) close the
+                            // stream WITHOUT a final `data: [DONE]` frame.
+                            // `reqwest-eventsource` surfaces that as `Error::StreamEnded`.
+                            // If we already accumulated assistant content, the response was
+                            // delivered in full — return it as a graceful completion instead of
+                            // discarding the buffered text and failing the whole turn. A
+                            // genuine transport error (no content yet, mid-token drop) still
+                            // errors so the caller's retry policy applies.
+                            let err_string = e.to_string();
+                            if err_string.contains("Stream ended")
+                                && content.iter().any(|c| {
+                                    matches!(c, Content::Text { text } if !text.is_empty())
+                                })
+                            {
+                                warn!(
+                                    "OpenAI SSE stream ended without [DONE] after content was received; treating as complete: {}",
+                                    err_string
+                                );
+                                let message = Message::Assistant {
+                                    content,
+                                    stop_reason: StopReason::Stop,
+                                    model: config.model.clone(),
+                                    provider: model_config.provider.clone(),
+                                    usage,
+                                    timestamp: now_ms(),
+                                    error_message: Some(format!(
+                                        "stream closed without [DONE]; partial content preserved ({})",
+                                        err_string
+                                    )),
+                                };
+                                let _ = tx.send(StreamEvent::Done {
+                                    message: message.clone(),
+                                });
+                                return Ok(message);
+                            }
                             let provider_err = classify_eventsource_error(e).await;
                             warn!("OpenAI SSE error: {}", provider_err);
                             return Err(provider_err);
@@ -1049,5 +1085,75 @@ mod tests {
         assert_eq!(msgs[1]["role"], "assistant");
         assert_eq!(msgs[1]["content"][0]["text"], "The file contains a.");
         assert_eq!(msgs[2]["role"], "user");
+    }
+
+    // Regression test for the SSE-truncation bug: some OpenAI-compatible
+    // providers (tencent/hy3:free via OpenRouter, MiniMax per arc-evolve #222)
+    // close the stream WITHOUT a final `data: [DONE]` frame. The parser must
+    // return the partial content already streamed (graceful completion) instead
+    // of discarding it and failing the turn.
+    #[tokio::test]
+    async fn test_stream_preserves_partial_content_on_premature_close() {
+        use wiremock::matchers::method;
+        use wiremock::{Mock, MockServer, ResponseTemplate};
+
+        let mock = MockServer::start().await;
+
+        // SSE body: one text delta, then the connection is closed with NO
+        // `data: [DONE]`. This is exactly what triggers reqwest-eventsource's
+        // `Error::StreamEnded` (`#[error("Stream ended")]`).
+        let sse = concat!(
+            "data: {\"choices\":[{\"delta\":{\"content\":\"Hello from a \"},",
+            "\"finish_reason\":null}]}\n\n",
+            "data: {\"choices\":[{\"delta\":{\"content\":\"truncated stream\"},",
+            "\"finish_reason\":null}]}\n\n",
+        );
+        Mock::given(method("POST"))
+            .respond_with(ResponseTemplate::new(200).set_body_raw(sse, "text/event-stream"))
+            .mount(&mock)
+            .await;
+
+        let model_config = ModelConfig::openai_compat(
+            mock.uri(),
+            "tencent/hy3:free",
+            "openrouter",
+            OpenAiCompat::openai(),
+        );
+        let config = StreamConfig {
+            model: "tencent/hy3:free".into(),
+            system_prompt: String::new(),
+            messages: vec![Message::user("Hi")],
+            tools: vec![],
+            thinking_level: ThinkingLevel::Off,
+            api_key: "test".into(),
+            max_tokens: None,
+            temperature: None,
+            model_config: Some(model_config.clone()),
+            cache_config: CacheConfig::default(),
+            output_schema: None,
+        };
+
+        let (tx, _rx) = mpsc::unbounded_channel::<StreamEvent>();
+        let provider = OpenAiCompatProvider;
+        let result = provider
+            .stream(config, tx, tokio_util::sync::CancellationToken::new())
+            .await;
+
+        // Must NOT fail — partial content must be preserved.
+        let msg = result.expect("stream should complete gracefully on premature close");
+        let text: String = match &msg {
+            Message::Assistant { content, .. } => content
+                .iter()
+                .filter_map(|c| match c {
+                    Content::Text { text } => Some(text.clone()),
+                    _ => None,
+                })
+                .collect(),
+            _ => String::new(),
+        };
+        assert!(
+            text.contains("Hello from a truncated stream"),
+            "partial assistant text was lost on premature stream close: {text:?}"
+        );
     }
 }
