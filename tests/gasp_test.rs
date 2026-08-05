@@ -2,11 +2,11 @@
 //! behavior, goal reuse, and interrupted-run recovery.
 #![cfg(feature = "gasp")]
 
-use std::process::Command;
 use arcagent::gasp::{GaspRecorder, GoalRef};
 use arcagent::provider::mock::*;
 use arcagent::provider::{MockProvider, ModelConfig};
 use arcagent::*;
+use std::process::Command;
 
 struct NoopTool;
 

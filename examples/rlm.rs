@@ -16,7 +16,6 @@
 //! Run on a specific directory:
 //!   XAI_API_KEY=xai-... cargo run --example rlm -- path/to/dir
 
-use std::sync::{Arc, Mutex};
 use arcagent::provider::model::ModelConfig;
 use arcagent::provider::{OpenAiCompatProvider, StreamProvider};
 #[allow(unused_imports)]
@@ -24,6 +23,7 @@ use arcagent::shared_state::{FileBackend, SharedState};
 use arcagent::sub_agent::SubAgentTool;
 use arcagent::tools;
 use arcagent::*;
+use std::sync::{Arc, Mutex};
 
 #[tokio::main]
 async fn main() {

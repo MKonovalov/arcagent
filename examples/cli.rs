@@ -24,12 +24,12 @@
 //!   /clear          Clear conversation history
 //!   /model <name>   Switch model mid-session
 
-use std::io::{self, BufRead, Write};
 use arcagent::agent::Agent;
 use arcagent::provider::ModelConfig;
 use arcagent::skills::SkillSet;
 use arcagent::tools::default_tools;
 use arcagent::*;
+use std::io::{self, BufRead, Write};
 
 // ANSI color helpers
 const RESET: &str = "\x1b[0m";

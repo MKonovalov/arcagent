@@ -1,13 +1,13 @@
 //! Tests for the Agent struct (stateful wrapper).
 
-use std::sync::atomic::{AtomicUsize, Ordering};
-use std::sync::Arc;
-use tokio::sync::mpsc;
 use arcagent::agent::Agent;
 use arcagent::provider::mock::*;
 use arcagent::provider::MockProvider;
 use arcagent::provider::ModelConfig;
 use arcagent::*;
+use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::Arc;
+use tokio::sync::mpsc;
 
 #[tokio::test]
 async fn test_agent_simple_prompt() {
@@ -771,15 +771,18 @@ async fn run_middleware_agent(mut agent: Agent) -> (Agent, Vec<AgentEvent>) {
 #[tokio::test]
 async fn test_tool_middleware_deny_blocks_tool_and_loop_continues() {
     let ran = Arc::new(std::sync::Mutex::new(None));
-    let agent = Agent::from_provider(tool_call_provider(), arcagent::provider::ModelConfig::mock())
-        .with_tools(vec![Box::new(RecordingTool { ran: ran.clone() })])
-        .with_tool_middleware(FnMiddleware(|name: &str, _args: &serde_json::Value| {
-            if name == "recording_tool" {
-                ToolDecision::Deny("blocked by policy".into())
-            } else {
-                ToolDecision::Allow
-            }
-        }));
+    let agent = Agent::from_provider(
+        tool_call_provider(),
+        arcagent::provider::ModelConfig::mock(),
+    )
+    .with_tools(vec![Box::new(RecordingTool { ran: ran.clone() })])
+    .with_tool_middleware(FnMiddleware(|name: &str, _args: &serde_json::Value| {
+        if name == "recording_tool" {
+            ToolDecision::Deny("blocked by policy".into())
+        } else {
+            ToolDecision::Allow
+        }
+    }));
 
     let (agent, events) = run_middleware_agent(agent).await;
 
@@ -824,11 +827,14 @@ async fn test_tool_middleware_deny_blocks_tool_and_loop_continues() {
 #[tokio::test]
 async fn test_tool_middleware_modify_rewrites_args() {
     let ran = Arc::new(std::sync::Mutex::new(None));
-    let agent = Agent::from_provider(tool_call_provider(), arcagent::provider::ModelConfig::mock())
-        .with_tools(vec![Box::new(RecordingTool { ran: ran.clone() })])
-        .with_tool_middleware(FnMiddleware(|_: &str, _: &serde_json::Value| {
-            ToolDecision::Modify(serde_json::json!({"path": "/tmp/sandboxed"}))
-        }));
+    let agent = Agent::from_provider(
+        tool_call_provider(),
+        arcagent::provider::ModelConfig::mock(),
+    )
+    .with_tools(vec![Box::new(RecordingTool { ran: ran.clone() })])
+    .with_tool_middleware(FnMiddleware(|_: &str, _: &serde_json::Value| {
+        ToolDecision::Modify(serde_json::json!({"path": "/tmp/sandboxed"}))
+    }));
 
     let (_, events) = run_middleware_agent(agent).await;
 
@@ -853,15 +859,18 @@ async fn test_tool_middleware_chain_first_deny_wins() {
     let ran = Arc::new(std::sync::Mutex::new(None));
     let saw = Arc::new(std::sync::Mutex::new(None));
     let saw2 = saw.clone();
-    let agent = Agent::from_provider(tool_call_provider(), arcagent::provider::ModelConfig::mock())
-        .with_tools(vec![Box::new(RecordingTool { ran: ran.clone() })])
-        .with_tool_middleware(FnMiddleware(|_: &str, _: &serde_json::Value| {
-            ToolDecision::Modify(serde_json::json!({"path": "/rewritten"}))
-        }))
-        .with_tool_middleware(FnMiddleware(move |_: &str, args: &serde_json::Value| {
-            *saw2.lock().unwrap() = Some(args.clone());
-            ToolDecision::Deny("second says no".into())
-        }));
+    let agent = Agent::from_provider(
+        tool_call_provider(),
+        arcagent::provider::ModelConfig::mock(),
+    )
+    .with_tools(vec![Box::new(RecordingTool { ran: ran.clone() })])
+    .with_tool_middleware(FnMiddleware(|_: &str, _: &serde_json::Value| {
+        ToolDecision::Modify(serde_json::json!({"path": "/rewritten"}))
+    }))
+    .with_tool_middleware(FnMiddleware(move |_: &str, args: &serde_json::Value| {
+        *saw2.lock().unwrap() = Some(args.clone());
+        ToolDecision::Deny("second says no".into())
+    }));
 
     let (agent, _) = run_middleware_agent(agent).await;
 
@@ -881,12 +890,15 @@ async fn test_tool_middleware_chain_first_deny_wins() {
 async fn test_tool_middleware_deny_under_sequential_strategy() {
     // The choke point is shared, but pin the Sequential path explicitly too.
     let ran = Arc::new(std::sync::Mutex::new(None));
-    let agent = Agent::from_provider(tool_call_provider(), arcagent::provider::ModelConfig::mock())
-        .with_tools(vec![Box::new(RecordingTool { ran: ran.clone() })])
-        .with_tool_execution(ToolExecutionStrategy::Sequential)
-        .with_tool_middleware(FnMiddleware(|_: &str, _: &serde_json::Value| {
-            ToolDecision::Deny("no".into())
-        }));
+    let agent = Agent::from_provider(
+        tool_call_provider(),
+        arcagent::provider::ModelConfig::mock(),
+    )
+    .with_tools(vec![Box::new(RecordingTool { ran: ran.clone() })])
+    .with_tool_execution(ToolExecutionStrategy::Sequential)
+    .with_tool_middleware(FnMiddleware(|_: &str, _: &serde_json::Value| {
+        ToolDecision::Deny("no".into())
+    }));
 
     let _ = run_middleware_agent(agent).await;
     assert!(ran.lock().unwrap().is_none());
@@ -1145,11 +1157,14 @@ async fn test_tool_middleware_panic_denies_and_loop_survives() {
     // A panicking middleware must not kill the loop task (which would strip
     // the agent of its tools) — it fails closed as a denial.
     let ran = Arc::new(std::sync::Mutex::new(None));
-    let agent = Agent::from_provider(tool_call_provider(), arcagent::provider::ModelConfig::mock())
-        .with_tools(vec![Box::new(RecordingTool { ran: ran.clone() })])
-        .with_tool_middleware(FnMiddleware(|_: &str, _: &serde_json::Value| {
-            panic!("middleware bug")
-        }));
+    let agent = Agent::from_provider(
+        tool_call_provider(),
+        arcagent::provider::ModelConfig::mock(),
+    )
+    .with_tools(vec![Box::new(RecordingTool { ran: ran.clone() })])
+    .with_tool_middleware(FnMiddleware(|_: &str, _: &serde_json::Value| {
+        panic!("middleware bug")
+    }));
 
     let (agent, _) = run_middleware_agent(agent).await;
     assert!(ran.lock().unwrap().is_none(), "tool must not run");
@@ -1170,12 +1185,15 @@ async fn test_tool_middleware_panic_denies_and_loop_survives() {
 #[tokio::test]
 async fn test_tool_middleware_deny_under_batched_strategy() {
     let ran = Arc::new(std::sync::Mutex::new(None));
-    let agent = Agent::from_provider(tool_call_provider(), arcagent::provider::ModelConfig::mock())
-        .with_tools(vec![Box::new(RecordingTool { ran: ran.clone() })])
-        .with_tool_execution(ToolExecutionStrategy::Batched { size: 1 })
-        .with_tool_middleware(FnMiddleware(|_: &str, _: &serde_json::Value| {
-            ToolDecision::Deny("no".into())
-        }));
+    let agent = Agent::from_provider(
+        tool_call_provider(),
+        arcagent::provider::ModelConfig::mock(),
+    )
+    .with_tools(vec![Box::new(RecordingTool { ran: ran.clone() })])
+    .with_tool_execution(ToolExecutionStrategy::Batched { size: 1 })
+    .with_tool_middleware(FnMiddleware(|_: &str, _: &serde_json::Value| {
+        ToolDecision::Deny("no".into())
+    }));
     let (agent, events) = run_middleware_agent(agent).await;
     assert!(ran.lock().unwrap().is_none());
     assert!(events

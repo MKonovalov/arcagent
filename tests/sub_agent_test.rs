@@ -1,14 +1,14 @@
 //! Tests for SubAgentTool using MockProvider.
 
-use std::sync::Arc;
-use tokio::sync::mpsc;
-use tokio_util::sync::CancellationToken;
 use arcagent::agent_loop::{agent_loop, AgentLoopConfig};
 use arcagent::provider::mock::*;
 use arcagent::provider::MockProvider;
 use arcagent::provider::ModelConfig;
 use arcagent::sub_agent::SubAgentTool;
 use arcagent::*;
+use std::sync::Arc;
+use tokio::sync::mpsc;
+use tokio_util::sync::CancellationToken;
 
 fn make_config(provider: MockProvider) -> AgentLoopConfig {
     AgentLoopConfig {

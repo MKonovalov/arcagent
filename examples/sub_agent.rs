@@ -8,12 +8,12 @@
 //! Run:
 //!   ANTHROPIC_API_KEY=sk-... cargo run --example sub_agent
 
-use std::sync::Arc;
 use arcagent::agent::Agent;
 use arcagent::provider::ModelConfig;
 use arcagent::sub_agent::SubAgentTool;
 use arcagent::tools;
 use arcagent::*;
+use std::sync::Arc;
 
 // Each construction resolves the Anthropic provider from the config's protocol
 // and reads ANTHROPIC_API_KEY from the environment.

@@ -3,12 +3,12 @@
 //!
 //! These tests are #[ignore] by default so they don't run in CI without a key.
 
-use tokio::sync::mpsc;
-use tokio_util::sync::CancellationToken;
 use arcagent::agent_loop::{agent_loop, AgentLoopConfig};
 use arcagent::provider::AnthropicProvider;
 use arcagent::tools;
 use arcagent::types::*;
+use tokio::sync::mpsc;
+use tokio_util::sync::CancellationToken;
 
 fn api_key() -> String {
     std::env::var("ANTHROPIC_API_KEY").expect("ANTHROPIC_API_KEY must be set")
