@@ -24,11 +24,11 @@
 //!   /clear          Clear conversation history
 //!   /model <name>   Switch model mid-session
 
-use arcgent::agent::Agent;
-use arcgent::provider::ModelConfig;
-use arcgent::skills::SkillSet;
-use arcgent::tools::default_tools;
-use arcgent::*;
+use arcagent::agent::Agent;
+use arcagent::provider::ModelConfig;
+use arcagent::skills::SkillSet;
+use arcagent::tools::default_tools;
+use arcagent::*;
 use std::io::{self, BufRead, Write};
 
 // ANSI color helpers
@@ -47,7 +47,7 @@ Use tools proactively: read files to understand context, run commands to verify 
 After making changes, run tests or verify the result when appropriate."#;
 
 fn print_banner() {
-    println!("\n{BOLD}{CYAN}  arcgent cli{RESET} {DIM}— mini coding agent{RESET}");
+    println!("\n{BOLD}{CYAN}  arcagent cli{RESET} {DIM}— mini coding agent{RESET}");
     println!("{DIM}  Type /quit to exit, /clear to reset{RESET}\n");
 }
 

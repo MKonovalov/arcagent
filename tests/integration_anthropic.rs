@@ -3,10 +3,10 @@
 //!
 //! These tests are #[ignore] by default so they don't run in CI without a key.
 
-use arcgent::agent_loop::{agent_loop, AgentLoopConfig};
-use arcgent::provider::AnthropicProvider;
-use arcgent::tools;
-use arcgent::types::*;
+use arcagent::agent_loop::{agent_loop, AgentLoopConfig};
+use arcagent::provider::AnthropicProvider;
+use arcagent::tools;
+use arcagent::types::*;
 use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
 
@@ -33,7 +33,7 @@ fn make_config(provider: AnthropicProvider) -> AgentLoopConfig {
         cache_config: CacheConfig::default(),
         output_schema: None,
         tool_execution: ToolExecutionStrategy::default(),
-        retry_config: arcgent::RetryConfig::default(),
+        retry_config: arcagent::RetryConfig::default(),
         before_turn: None,
         after_turn: None,
         on_error: None,
@@ -144,7 +144,7 @@ async fn test_anthropic_tool_use() {
     };
 
     let prompt = AgentMessage::Llm(Message::user(
-        "What is the output of `echo hello_arcgent`? Use bash to run it.",
+        "What is the output of `echo hello_arcagent`? Use bash to run it.",
     ));
     let new_messages = agent_loop(vec![prompt], &mut context, &config, tx, cancel).await;
 
@@ -182,8 +182,8 @@ async fn test_anthropic_tool_use() {
     // Verify the final response mentions the output
     let final_text = extract_assistant_text(&new_messages);
     assert!(
-        final_text.contains("hello_arcgent"),
-        "Expected response to contain 'hello_arcgent', got: {}",
+        final_text.contains("hello_arcagent"),
+        "Expected response to contain 'hello_arcagent', got: {}",
         final_text
     );
     println!("Full text: {}", final_text);

@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to `arcgent` are documented here. The format loosely
+All notable changes to `arcagent` are documented here. The format loosely
 follows [Keep a Changelog](https://keepachangelog.com/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
@@ -18,16 +18,23 @@ adheres to [Semantic Versioning](https://semver.org/).
 
 - **GASP bridge** (feature `gasp`) — `gasp::GaspRecorder` records agent runs
   into a [GASP](https://github.com/MKonovalov/gasp) agent repo via
-  `arcgent-state`: append-only `state/events.jsonl` (goal/run/model/tool
+  `arcagent-state`: append-only `state/events.jsonl` (goal/run/model/tool
   events), one git commit per run (scaffolding committed at init so `git
   clone` restores a complete agent), stale/interrupted runs closed safely,
   events teed to your UI **before** recording (a recording failure never
   blinds the UI; the error surfaces via the returned handle). Redaction hook
   via `with_summarizer` — summaries of tool inputs/outputs are persisted to
-  a shareable repo. arcgent is now a **tested** GASP-conformant runtime: CI
+  a shareable repo. arcagent is now a **tested** GASP-conformant runtime: CI
   emits a repo and runs the protocol's 7-check suite against a **fresh
-  clone** (the actual restore operation). New `gasp_emit` example and docs
+  clone` (the actual restore operation). New `gasp_emit` example and docs
   page.
+
+### Fixed
+
+- **Crate renamed `arcgent` → `arcagent`** to match the repository name
+  (`github.com/MKonovalov/arcagent`). All internal `use arcgent::…` paths,
+  examples, tests, docs, `book.toml`, `CLAUDE.md`, and `Cargo.toml`/`Cargo.lock`
+  were updated accordingly; the `arcagent-state` dependency name is unchanged.
 
 ## 0.11.0
 

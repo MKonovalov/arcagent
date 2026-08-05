@@ -15,9 +15,9 @@
 //! # Example
 //!
 //! ```rust,no_run
-//! use arcgent::skills::SkillSet;
+//! use arcagent::skills::SkillSet;
 //!
-//! let skills = SkillSet::load(&["./skills", "~/.arcgent/skills"]).unwrap();
+//! let skills = SkillSet::load(&["./skills", "~/.arcagent/skills"]).unwrap();
 //! println!("{}", skills.format_for_prompt());
 //! // Inject into system prompt via Agent::with_skills()
 //! ```

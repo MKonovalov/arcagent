@@ -4,10 +4,10 @@
 //! `build_request_body` can't reach: stop-reason mapping from SSE events and
 //! the request headers actually sent on the wire.
 
-use arcgent::provider::{
+use arcagent::provider::{
     AnthropicCompat, AnthropicProvider, ModelConfig, StreamConfig, StreamProvider,
 };
-use arcgent::types::*;
+use arcagent::types::*;
 use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
 use wiremock::matchers::{header, method, path};
@@ -47,7 +47,7 @@ fn stream_config(base_url: &str, anthropic: Option<AnthropicCompat>) -> StreamCo
     config
 }
 
-async fn run_stream(config: StreamConfig) -> Result<Message, arcgent::provider::ProviderError> {
+async fn run_stream(config: StreamConfig) -> Result<Message, arcagent::provider::ProviderError> {
     let (tx, _rx) = mpsc::unbounded_channel();
     AnthropicProvider
         .stream(config, tx, CancellationToken::new())
@@ -196,7 +196,7 @@ async fn rate_limit_carries_retry_after_from_header() {
         .expect_err("429 must surface as an error");
 
     match err {
-        arcgent::provider::ProviderError::RateLimited { retry_after_ms } => {
+        arcagent::provider::ProviderError::RateLimited { retry_after_ms } => {
             assert_eq!(retry_after_ms, Some(7000));
         }
         other => panic!("expected RateLimited, got: {:?}", other),

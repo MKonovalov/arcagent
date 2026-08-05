@@ -1,4 +1,4 @@
-//! Telemetry example: arcgent emits `tracing` spans for the loop, each LLM
+//! Telemetry example: arcagent emits `tracing` spans for the loop, each LLM
 //! stream (with token/cost fields), and each tool execution.
 //!
 //! Run with: cargo run --example telemetry
@@ -7,8 +7,8 @@
 //! `tracing-opentelemetry` layer instead and the same spans flow to any OTLP
 //! backend (Datadog, Grafana Tempo, Honeycomb, Jaeger, ...).
 
-use arcgent::provider::{MockProvider, ModelConfig};
-use arcgent::*;
+use arcagent::provider::{MockProvider, ModelConfig};
+use arcagent::*;
 
 #[tokio::main]
 async fn main() {

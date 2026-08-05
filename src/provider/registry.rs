@@ -147,7 +147,7 @@ mod tests {
 /// | `bedrock` | `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY` (+ `AWS_SESSION_TOKEN`), composed as `access:secret[:token]` |
 /// | `vertex` | none — pass a short-lived OAuth token via `with_api_key` |
 /// | `local` / `ollama` | no key needed (empty) |
-/// | anything else | `arcgent_API_KEY`, then `API_KEY` |
+/// | anything else | `arcagent_API_KEY`, then `API_KEY` |
 pub fn resolve_api_key(provider: &str) -> Option<String> {
     use std::env::var;
     let first = |names: &[&str]| {
@@ -185,7 +185,7 @@ pub fn resolve_api_key(provider: &str) -> Option<String> {
         }
         "vertex" => None,
         "local" | "ollama" => Some(String::new()),
-        _ => first(&["arcgent_API_KEY", "API_KEY"]),
+        _ => first(&["arcagent_API_KEY", "API_KEY"]),
     }
 }
 
@@ -232,7 +232,7 @@ fn api_key_env_hint(provider: &str) -> &'static str {
              or call .with_api_key(\"access:secret[:token]\")"
         }
         "vertex" => "pass a short-lived OAuth token via .with_api_key(...)",
-        _ => "set arcgent_API_KEY (or API_KEY) or call .with_api_key(...)",
+        _ => "set arcagent_API_KEY (or API_KEY) or call .with_api_key(...)",
     }
 }
 
@@ -267,12 +267,12 @@ mod resolve_key_tests {
     fn test_env_resolution() {
         // Use a provider name unique to this test to avoid env races with
         // parallel tests.
-        std::env::set_var("arcgent_API_KEY", "from-generic-fallback");
+        std::env::set_var("arcagent_API_KEY", "from-generic-fallback");
         assert_eq!(
             resolve_api_key("some-unknown-gateway").as_deref(),
             Some("from-generic-fallback")
         );
-        std::env::remove_var("arcgent_API_KEY");
+        std::env::remove_var("arcagent_API_KEY");
     }
 }
 

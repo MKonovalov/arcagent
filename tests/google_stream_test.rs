@@ -5,8 +5,8 @@
 //! exercised only by the key-gated `integration_gemini.rs` live tests
 //! (issue #33).
 
-use arcgent::provider::{GoogleProvider, ModelConfig, StreamConfig, StreamProvider};
-use arcgent::types::*;
+use arcagent::provider::{GoogleProvider, ModelConfig, StreamConfig, StreamProvider};
+use arcagent::types::*;
 use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
 use wiremock::matchers::{method, path};
@@ -259,7 +259,7 @@ async fn in_stream_error_payload_fails_the_stream() {
         .await;
 
     let (tx, _rx) = tokio::sync::mpsc::unbounded_channel();
-    let result = arcgent::provider::GoogleProvider
+    let result = arcagent::provider::GoogleProvider
         .stream(
             stream_config(&server.uri(), vec![Message::user("hi")]),
             tx,

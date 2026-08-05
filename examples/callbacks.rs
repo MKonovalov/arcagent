@@ -8,10 +8,10 @@
 //! Uses MockProvider so no API key is needed.
 //!   cargo run --example callbacks
 
-use arcgent::agent::Agent;
-use arcgent::provider::mock::*;
-use arcgent::provider::MockProvider;
-use arcgent::types::*;
+use arcagent::agent::Agent;
+use arcagent::provider::mock::*;
+use arcagent::provider::MockProvider;
+use arcagent::types::*;
 use std::sync::{Arc, Mutex};
 
 #[tokio::main]
@@ -70,7 +70,7 @@ async fn main() {
         }
     }
 
-    let mut agent = Agent::from_provider(provider, arcgent::provider::ModelConfig::mock())
+    let mut agent = Agent::from_provider(provider, arcagent::provider::ModelConfig::mock())
         .with_system_prompt("You are helpful.")
         .with_tools(vec![Box::new(GreetTool)])
         // Limit to 5 turns (plenty for this example)

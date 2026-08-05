@@ -2,7 +2,7 @@
 
 ## Layered Design
 
-arcgent is organized as three conceptual layers within a single crate. Dependencies flow strictly downward — upper layers use lower layers, never the reverse.
+arcagent is organized as three conceptual layers within a single crate. Dependencies flow strictly downward — upper layers use lower layers, never the reverse.
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -75,7 +75,7 @@ Multi-agent coordination. Not yet implemented — the architecture is designed t
 ## Module Layout
 
 ```
-arcgent/
+arcagent/
 ├── src/
 │   ├── lib.rs                  # Public re-exports
 │   │
@@ -150,7 +150,7 @@ Events flow back via mpsc::UnboundedSender<AgentEvent>
 3. Set `ModelConfig.api` to match that protocol
 4. The registry dispatches `stream()` calls to the right provider
 
-Each provider translates between arcgent's `Message`/`Content` types and the provider's native API format. All providers emit `StreamEvent`s through the channel for real-time updates.
+Each provider translates between arcagent's `Message`/`Content` types and the provider's native API format. All providers emit `StreamEvent`s through the channel for real-time updates.
 
 ## How Tools Plug In
 

@@ -4,7 +4,7 @@ Get a **typed, schema-validated reply** instead of free text. The JSON Schema
 is enforced natively by the provider — not by prompt begging.
 
 ```rust
-use arcgent::{Agent, provider::ModelConfig};
+use arcagent::{Agent, provider::ModelConfig};
 
 #[derive(serde::Deserialize)]
 struct Invoice {

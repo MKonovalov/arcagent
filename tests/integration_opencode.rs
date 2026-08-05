@@ -3,9 +3,9 @@
 //!
 //! These tests are #[ignore] by default so they don't run in CI without a key.
 
-use arcgent::agent_loop::{agent_loop, AgentLoopConfig};
-use arcgent::provider::{AnthropicProvider, ModelConfig, OpenAiCompatProvider, StreamProvider};
-use arcgent::types::*;
+use arcagent::agent_loop::{agent_loop, AgentLoopConfig};
+use arcagent::provider::{AnthropicProvider, ModelConfig, OpenAiCompatProvider, StreamProvider};
+use arcagent::types::*;
 use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
 
@@ -35,7 +35,7 @@ fn make_config(
         cache_config: CacheConfig::default(),
         output_schema: None,
         tool_execution: ToolExecutionStrategy::default(),
-        retry_config: arcgent::RetryConfig::default(),
+        retry_config: arcagent::RetryConfig::default(),
         before_turn: None,
         after_turn: None,
         on_error: None,

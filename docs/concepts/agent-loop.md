@@ -1,6 +1,6 @@
 # The Agent Loop
 
-The agent loop is the core of arcgent. It implements the fundamental cycle:
+The agent loop is the core of arcagent. It implements the fundamental cycle:
 
 ```
 User prompt → LLM call → Tool execution → LLM call → ... → Final response
@@ -227,11 +227,11 @@ let config = AgentLoopConfig {
 
 ## Custom Compaction
 
-By default, when context exceeds the token budget in `ContextConfig`, arcgent runs a 3-level compaction strategy: truncate tool outputs → summarize old turns → drop middle messages. You can replace this with your own `CompactionStrategy`:
+By default, when context exceeds the token budget in `ContextConfig`, arcagent runs a 3-level compaction strategy: truncate tool outputs → summarize old turns → drop middle messages. You can replace this with your own `CompactionStrategy`:
 
 ```rust
-use arcgent::context::{CompactionStrategy, ContextConfig, compact_messages};
-use arcgent::types::*;
+use arcagent::context::{CompactionStrategy, ContextConfig, compact_messages};
+use arcagent::types::*;
 
 struct MyCompaction;
 

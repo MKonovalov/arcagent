@@ -140,7 +140,7 @@ mod tests {
     #[test]
     fn test_client_info_default() {
         let info = ClientInfo::default();
-        assert_eq!(info.name, "arcgent");
+        assert_eq!(info.name, "arcagent");
         assert!(!info.version.is_empty());
     }
 }

@@ -2,9 +2,9 @@
 //!
 //! Run with: ANTHROPIC_API_KEY=sk-... cargo run --example basic
 
-use arcgent::agent::Agent;
-use arcgent::provider::ModelConfig;
-use arcgent::*;
+use arcagent::agent::Agent;
+use arcagent::provider::ModelConfig;
+use arcagent::*;
 
 #[tokio::main]
 async fn main() {

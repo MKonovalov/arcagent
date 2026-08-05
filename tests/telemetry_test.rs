@@ -4,9 +4,9 @@
 //! and drives `agent_loop` directly in the current task — spans created in
 //! separately-spawned tasks would not reach this scoped subscriber.
 
-use arcgent::provider::mock::*;
-use arcgent::provider::MockProvider;
-use arcgent::*;
+use arcagent::provider::mock::*;
+use arcagent::provider::MockProvider;
+use arcagent::*;
 use std::sync::{Arc, Mutex};
 use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
@@ -61,8 +61,8 @@ impl AgentTool for EchoTool {
     }
 }
 
-fn loop_config(provider: MockProvider) -> arcgent::agent_loop::AgentLoopConfig {
-    arcgent::agent_loop::AgentLoopConfig {
+fn loop_config(provider: MockProvider) -> arcagent::agent_loop::AgentLoopConfig {
+    arcagent::agent_loop::AgentLoopConfig {
         provider: std::sync::Arc::new(provider),
         model: "mock".into(),
         api_key: "test".into(),
@@ -81,7 +81,7 @@ fn loop_config(provider: MockProvider) -> arcgent::agent_loop::AgentLoopConfig {
         tool_execution: ToolExecutionStrategy::default(),
         tool_middleware: vec![],
         output_schema: None,
-        retry_config: arcgent::RetryConfig::none(),
+        retry_config: arcagent::RetryConfig::none(),
         before_turn: None,
         after_turn: None,
         on_error: None,
@@ -208,13 +208,13 @@ where
 struct UsageProvider;
 
 #[async_trait::async_trait]
-impl arcgent::provider::StreamProvider for UsageProvider {
+impl arcagent::provider::StreamProvider for UsageProvider {
     async fn stream(
         &self,
-        _config: arcgent::provider::StreamConfig,
-        tx: mpsc::UnboundedSender<arcgent::provider::StreamEvent>,
+        _config: arcagent::provider::StreamConfig,
+        tx: mpsc::UnboundedSender<arcagent::provider::StreamEvent>,
         _cancel: CancellationToken,
-    ) -> Result<Message, arcgent::provider::ProviderError> {
+    ) -> Result<Message, arcagent::provider::ProviderError> {
         let msg = Message::assistant(
             vec![Content::Text { text: "ok".into() }],
             StopReason::Stop,
@@ -228,7 +228,7 @@ impl arcgent::provider::StreamProvider for UsageProvider {
                 total_tokens: 1_500_007,
             },
         );
-        let _ = tx.send(arcgent::provider::StreamEvent::Done {
+        let _ = tx.send(arcagent::provider::StreamEvent::Done {
             message: msg.clone(),
         });
         Ok(msg)
@@ -246,7 +246,7 @@ async fn llm_stream_records_tokens_and_cost() {
 
     let mut config = loop_config(MockProvider::text("unused"));
     config.provider = std::sync::Arc::new(UsageProvider);
-    let mut mc = arcgent::provider::ModelConfig::mock();
+    let mut mc = arcagent::provider::ModelConfig::mock();
     mc.cost.input_per_million = 3.0;
     mc.cost.output_per_million = 15.0;
     config.model_config = Some(mc);

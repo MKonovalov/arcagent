@@ -7,18 +7,18 @@ goal/run/model/tool graph, alongside identity, skills, and memory tiers.
 Restore = `git clone` + replay. Clone your agent onto a new machine and it
 remembers everything, with lineage.
 
-arcgent bridges to GASP through the `gasp` feature (backed by
-[`arcgent-state`](https://crates.io/crates/arcgent-state), the reference
+arcagent bridges to GASP through the `gasp` feature (backed by
+[`arcagent-state`](https://crates.io/crates/arcagent-state), the reference
 runtime). The bridge is a consumer of the [`AgentEvent`] stream — **zero
 agent-loop changes**:
 
 ```toml
-arcgent = { version = "0.12", features = ["gasp"] }
+arcagent = { version = "0.12", features = ["gasp"] }
 ```
 
 
 ```rust
-use arcgent::gasp::{GaspRecorder, GoalRef};
+use arcagent::gasp::{GaspRecorder, GoalRef};
 
 let recorder = GaspRecorder::init(
     "./my-agent-repo", "my-agent", "worker-1",
@@ -60,7 +60,7 @@ live workers, and record one run at a time.
 
 ## Tested conformance
 
-arcgent's CI emits an agent repo with a mock provider and runs the GASP
+arcagent's CI emits an agent repo with a mock provider and runs the GASP
 conformance checker against it — all seven mechanical checks (envelope
 round-trip, replay, vocabulary, append-only git history, causation integrity,
 restore, domain↔ops consistency) must pass on every commit. Try it yourself:
@@ -72,4 +72,4 @@ cargo run -q -- /tmp/my-agent
 # conformant: all checks passed
 ```
 
-[`AgentEvent`]: https://docs.rs/arcgent/latest/arcgent/enum.AgentEvent.html
+[`AgentEvent`]: https://docs.rs/arcagent/latest/arcagent/enum.AgentEvent.html

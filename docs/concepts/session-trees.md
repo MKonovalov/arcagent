@@ -11,7 +11,7 @@ overwritten. This is the primitive behind:
   branch stays intact
 
 ```rust
-use arcgent::{Agent, Session, provider::ModelConfig};
+use arcagent::{Agent, Session, provider::ModelConfig};
 
 let mut session = Session::new();
 

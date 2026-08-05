@@ -36,7 +36,7 @@ pub enum StreamEvent {
 /// [`StreamConfig::new`] and mutate the public fields:
 ///
 /// ```
-/// # use arcgent::provider::StreamConfig;
+/// # use arcagent::provider::StreamConfig;
 /// let mut config = StreamConfig::new("claude-sonnet-5", "sk-key");
 /// config.system_prompt = "be brief".into();
 /// ```

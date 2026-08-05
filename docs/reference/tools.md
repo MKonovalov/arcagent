@@ -1,9 +1,9 @@
 # Built-in Tools
 
-arcgent ships with six coding-oriented tools. Get them all with `default_tools()`:
+arcagent ships with six coding-oriented tools. Get them all with `default_tools()`:
 
 ```rust
-use arcgent::tools::default_tools;
+use arcagent::tools::default_tools;
 let tools = default_tools();
 ```
 

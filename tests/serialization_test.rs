@@ -1,6 +1,6 @@
 //! Serde round-trip tests for core types.
 
-use arcgent::*;
+use arcagent::*;
 
 fn roundtrip<T: serde::Serialize + serde::de::DeserializeOwned + PartialEq + std::fmt::Debug>(
     value: &T,
@@ -164,7 +164,7 @@ fn test_full_conversation_roundtrip() {
 
 #[test]
 fn test_execution_limits_roundtrip() {
-    use arcgent::context::ExecutionLimits;
+    use arcagent::context::ExecutionLimits;
     let limits = ExecutionLimits {
         max_turns: 25,
         max_total_tokens: 500_000,
@@ -186,7 +186,7 @@ fn test_tool_execution_strategy_roundtrip() {
 
 #[test]
 fn test_refusal_stop_reason_round_trip() {
-    use arcgent::types::*;
+    use arcagent::types::*;
 
     let message = Message::assistant(
         vec![],
