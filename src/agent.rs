@@ -33,6 +33,10 @@ pub struct Agent {
     pub max_tokens: Option<u32>,
     pub temperature: Option<f32>,
     model_config: Option<ModelConfig>,
+    /// Opt-in forced tool choice (e.g. "required"). Threaded to OpenAI-compatible
+    /// providers so free/open-weight models (tencent/hy3:free on nousresearch)
+    /// actually invoke tools instead of answering in prose. None = unchanged.
+    tool_choice: Option<String>,
     messages: Vec<AgentMessage>,
     tools: Vec<Box<dyn AgentTool>>,
     provider: Arc<dyn StreamProvider>,
@@ -313,6 +317,11 @@ impl Agent {
     )]
     pub fn with_model_config(mut self, config: ModelConfig) -> Self {
         self.model_config = Some(config);
+        self
+    }
+
+    pub fn with_tool_choice(mut self, tc: Option<String>) -> Self {
+        self.tool_choice = tc;
         self
     }
 
@@ -1081,6 +1090,7 @@ impl Agent {
             max_tokens: self.max_tokens,
             temperature: self.temperature,
             model_config: self.model_config.clone(),
+            tool_choice: self.tool_choice.clone(),
             convert_to_llm: None,
             transform_context: None,
             get_steering_messages: Some(Box::new(move || {
