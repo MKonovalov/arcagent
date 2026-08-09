@@ -426,6 +426,12 @@ fn build_request_body(
         body["tools"] = serde_json::json!(tools);
     }
 
+    // Forced tool choice (opt-in). Proven: nousresearch's tencent/hy3:free
+    // emits a correct tool call with tool_choice:"required" (live curl 2026-08-09).
+    if let Some(ref tc) = config.tool_choice {
+        body["tool_choice"] = serde_json::json!(tc);
+    }
+
     // Structured outputs: native json_schema response format.
     if let Some(schema) = &config.output_schema {
         body["response_format"] = serde_json::json!({

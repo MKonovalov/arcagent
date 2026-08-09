@@ -66,6 +66,17 @@ pub struct StreamConfig {
 impl StreamConfig {
     /// A config with the given model and API key; everything else defaults
     /// (empty prompt/messages/tools, thinking off, caching enabled).
+
+    /// Structured-output constraint. ...
+    pub output_schema: Option<OutputSchema>,
+    /// Opt-in forced tool choice. When `Some("required")` (or a function name),
+    /// OpenAI-compatible providers set `tool_choice` in the request. Used to
+    /// make free/open-weight models (e.g. tencent/hy3:free on nousresearch)
+    /// actually invoke tools instead of answering in prose under the default
+    /// `auto`. `None` = unchanged behavior for all other providers/models.
+    pub tool_choice: Option<String>,
+}
+
     pub fn new(model: impl Into<String>, api_key: impl Into<String>) -> Self {
         Self {
             model: model.into(),
@@ -79,6 +90,7 @@ impl StreamConfig {
             model_config: None,
             cache_config: CacheConfig::default(),
             output_schema: None,
+            tool_choice: None,
         }
     }
 }

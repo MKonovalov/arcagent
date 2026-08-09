@@ -82,6 +82,13 @@ pub struct AgentLoopConfig {
     /// [`Agent::prompt_structured`](crate::Agent::prompt_structured).
     pub output_schema: Option<crate::provider::OutputSchema>,
 
+    /// Opt-in forced tool choice, passed through to `StreamConfig` so
+    /// OpenAI-compatible providers set `tool_choice` in the request. Used to
+    /// make free/open-weight models (e.g. tencent/hy3:free on nousresearch)
+    /// actually invoke tools instead of answering in prose under `auto`.
+    /// `None` = unchanged behavior for all other providers/models.
+    pub tool_choice: Option<String>,
+
     /// Retry configuration for transient provider errors.
     pub retry_config: crate::retry::RetryConfig,
 
@@ -626,6 +633,7 @@ async fn stream_assistant_response(
     // Retry loop for transient provider errors
     let retry = &config.retry_config;
     let mut attempt = 0;
+
     let result = loop {
         let stream_config = StreamConfig {
             model: config.model.clone(),
@@ -639,6 +647,7 @@ async fn stream_assistant_response(
             model_config: config.model_config.clone(),
             cache_config: config.cache_config.clone(),
             output_schema: config.output_schema.clone(),
+            tool_choice: config.tool_choice.clone(),
         };
 
         let (stream_tx, mut stream_rx) = mpsc::unbounded_channel();
