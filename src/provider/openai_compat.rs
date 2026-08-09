@@ -425,6 +425,9 @@ fn build_request_body(
             .collect();
         body["tools"] = serde_json::json!(tools);
     }
+    if let Some(ref tc) = config.tool_choice {
+        body["tool_choice"] = serde_json::json!(tc);
+    }
 
     // Structured outputs: native json_schema response format.
     if let Some(schema) = &config.output_schema {
@@ -619,6 +622,7 @@ mod tests {
             model_config: Some(model_config.clone()),
             cache_config: CacheConfig::default(),
             output_schema: None,
+            tool_choice: None,
         };
 
         let body = build_request_body(&config, &model_config, &OpenAiCompat::openai());
@@ -651,6 +655,7 @@ mod tests {
             model_config: Some(model_config.clone()),
             cache_config: CacheConfig::default(),
             output_schema: None,
+            tool_choice: None,
         };
 
         let body = build_request_body(&config, &model_config, &compat);
@@ -675,6 +680,7 @@ mod tests {
             model_config: Some(model_config.clone()),
             cache_config: CacheConfig::default(),
             output_schema: None,
+            tool_choice: None,
         };
 
         let body = build_request_body(&config, &model_config, &compat);
@@ -702,6 +708,7 @@ mod tests {
             model_config: Some(model_config.clone()),
             cache_config: CacheConfig::default(),
             output_schema: None,
+            tool_choice: None,
         };
 
         let body = build_request_body(&config, &model_config, &compat);
@@ -726,6 +733,7 @@ mod tests {
             model_config: Some(model_config.clone()),
             cache_config: CacheConfig::default(),
             output_schema: None,
+            tool_choice: None,
         };
 
         let body = build_request_body(&config, &model_config, &compat);
@@ -762,6 +770,7 @@ mod tests {
             model_config: Some(model_config.clone()),
             cache_config: CacheConfig::default(),
             output_schema: None,
+            tool_choice: None,
         };
 
         let body = build_request_body(&config, &model_config, &compat);
@@ -887,6 +896,7 @@ mod tests {
             model_config: Some(model_config.clone()),
             cache_config: CacheConfig::default(),
             output_schema: None,
+            tool_choice: None,
         };
 
         let body = build_request_body(&config, &model_config, &compat);
@@ -927,6 +937,7 @@ mod tests {
             model_config: Some(model_config.clone()),
             cache_config: CacheConfig::default(),
             output_schema: None,
+            tool_choice: None,
         };
 
         let body = build_request_body(&config, &model_config, &compat);
@@ -982,6 +993,7 @@ mod tests {
             model_config: Some(model_config.clone()),
             cache_config: CacheConfig::default(),
             output_schema: None,
+            tool_choice: None,
         };
 
         let body = build_request_body(&config, &model_config, &compat);
@@ -1024,6 +1036,7 @@ mod tests {
             model_config: Some(model_config.clone()),
             cache_config: CacheConfig::default(),
             output_schema: None,
+            tool_choice: None,
         };
 
         let body = build_request_body(&config, &model_config, &compat);
@@ -1076,6 +1089,7 @@ mod tests {
             model_config: Some(model_config.clone()),
             cache_config: CacheConfig::default(),
             output_schema: None,
+            tool_choice: None,
         };
 
         let body = build_request_body(&config, &model_config, &compat);
@@ -1131,6 +1145,7 @@ mod tests {
             model_config: Some(model_config.clone()),
             cache_config: CacheConfig::default(),
             output_schema: None,
+            tool_choice: None,
         };
 
         let (tx, _rx) = mpsc::unbounded_channel::<StreamEvent>();

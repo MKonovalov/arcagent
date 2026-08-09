@@ -61,6 +61,7 @@ pub struct StreamConfig {
     /// response format; Gemini: `responseSchema`). Providers without support
     /// log a warning and ignore it.
     pub output_schema: Option<OutputSchema>,
+    pub tool_choice: Option<String>,
 }
 
 impl StreamConfig {
@@ -79,6 +80,7 @@ impl StreamConfig {
             model_config: None,
             cache_config: CacheConfig::default(),
             output_schema: None,
+            tool_choice: None,
         }
     }
 }
