@@ -44,6 +44,9 @@ pub struct AgentLoopConfig {
     /// base_url, headers, compat flags, etc.
     pub model_config: Option<ModelConfig>,
 
+    /// Opt-in non-streaming mode (Some(false) disables SSE). Default None.
+    pub stream: Option<bool>,
+
     /// Convert AgentMessage[] → Message[] before each LLM call.
     /// Default: keep only LLM-compatible messages.
     pub convert_to_llm: Option<ConvertToLlmFn>,
@@ -641,6 +644,7 @@ async fn stream_assistant_response(
             cache_config: config.cache_config.clone(),
             output_schema: config.output_schema.clone(),
             tool_choice: config.tool_choice.clone(),
+            stream: config.stream.unwrap_or(true),
         };
 
         let (stream_tx, mut stream_rx) = mpsc::unbounded_channel();

@@ -54,6 +54,10 @@ impl StreamProvider for OpenAiCompatProvider {
 
         let request = request.json(&body);
 
+        if !config.stream {
+            return stream_nonstreaming(config, request, tx).await;
+        }
+
         let mut es =
             EventSource::new(request).map_err(|e| ProviderError::Network(e.to_string()))?;
 
@@ -385,10 +389,12 @@ fn build_request_body(
     let max_tokens_val = config.max_tokens.unwrap_or(model_config.max_tokens);
     let mut body = serde_json::json!({
         "model": config.model,
-        "stream": true,
-        "stream_options": {"include_usage": true},
+        "stream": config.stream,
         "messages": messages,
     });
+    if config.stream {
+        body["stream_options"] = serde_json::json!({ "include_usage": true });
+    }
 
     match compat.max_tokens_field {
         MaxTokensField::MaxCompletionTokens => {
@@ -456,6 +462,60 @@ fn build_request_body(
     }
 
     body
+}
+
+async fn stream_nonstreaming(
+    config: StreamConfig,
+    request: reqwest::RequestBuilder,
+    tx: mpsc::UnboundedSender<StreamEvent>,
+) -> Result<Message, ProviderError> {
+    let _ = tx.send(StreamEvent::Start);
+    let resp = request.send().await.map_err(|e| ProviderError::Network(e.to_string()))?;
+    if !resp.status().is_success() {
+        let status = resp.status().as_u16();
+        let body = resp.text().await.unwrap_or_default();
+        return Err(ProviderError::classify(status, &body));
+    }
+    let value: serde_json::Value = resp
+        .json()
+        .await
+        .map_err(|e| ProviderError::Other(format!("non-stream JSON parse error: {e}")))?;
+    let mut content: Vec<Content> = Vec::new();
+    let mut usage = Usage::default();
+    let mut stop_reason = StopReason::Stop;
+    if let Some(u) = value.get("usage") {
+        usage.input = u.get("prompt_tokens").and_then(|v| v.as_u64()).unwrap_or(0);
+        usage.output = u.get("completion_tokens").and_then(|v| v.as_u64()).unwrap_or(0);
+        usage.total_tokens = u.get("total_tokens").and_then(|v| v.as_u64()).unwrap_or(0);
+    }
+    let choice = value.get("choices").and_then(|c| c.get(0)).and_then(|c| c.get("message"))
+        .ok_or_else(|| ProviderError::Other("missing choices[0].message".into()))?;
+    if let Some(text) = choice.get("content").and_then(|v| v.as_str()) {
+        if !text.is_empty() {
+            content.push(Content::Text { text: text.to_string() });
+            let _ = tx.send(StreamEvent::TextDelta { content_index: content.len() - 1, delta: text.to_string() });
+        }
+    }
+    if let Some(tool_calls) = choice.get("tool_calls").and_then(|v| v.as_array()) {
+        for (i, tc) in tool_calls.iter().enumerate() {
+            let id = tc.get("id").and_then(|v| v.as_str()).unwrap_or("").to_string();
+            let func = tc.get("function").cloned().unwrap_or(serde_json::Value::Null);
+            let name = func.get("name").and_then(|v| v.as_str()).unwrap_or("").to_string();
+            let args = func.get("arguments").and_then(|v| v.as_str()).unwrap_or("").to_string();
+            if !name.is_empty() {
+                let _ = tx.send(StreamEvent::ToolCallStart { content_index: content.len() + i, id: id.clone(), name: name.clone() });
+            }
+            if !args.is_empty() {
+                let _ = tx.send(StreamEvent::ToolCallDelta { content_index: content.len() + i, delta: args.clone() });
+            }
+        }
+        stop_reason = StopReason::ToolUse;
+    }
+    if let Some(reason) = choice.get("finish_reason").and_then(|v| v.as_str()) {
+        stop_reason = match reason { "tool_calls" => StopReason::ToolUse, "length" => StopReason::Length, _ => StopReason::Stop };
+    }
+    let message = Message::Assistant { content, stop_reason, model: config.model.clone(), provider: String::new(), usage, timestamp: 0, error_message: None };
+    Ok(message)
 }
 
 fn maybe_insert_assistant_after_tool_results(

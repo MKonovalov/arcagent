@@ -413,6 +413,7 @@ impl AgentTool for SubAgentTool {
             }),
             cache_config: self.cache_config.clone(),
             tool_choice: None,
+            stream: None,
             tool_execution: self.tool_execution.clone(),
             retry_config: self.retry_config.clone(),
             before_turn: None,
