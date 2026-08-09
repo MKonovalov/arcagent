@@ -91,6 +91,7 @@ pub struct AgentLoopConfig {
     pub after_turn: Option<AfterTurnFn>,
     /// Called when the LLM returns a `StopReason::Error`.
     pub on_error: Option<OnErrorFn>,
+    pub tool_choice: Option<String>,
 
     /// Input filters applied to user messages before the LLM call.
     /// Filters run in order; first `Reject` wins and discards any accumulated
@@ -639,6 +640,7 @@ async fn stream_assistant_response(
             model_config: config.model_config.clone(),
             cache_config: config.cache_config.clone(),
             output_schema: config.output_schema.clone(),
+            tool_choice: config.tool_choice.clone(),
         };
 
         let (stream_tx, mut stream_rx) = mpsc::unbounded_channel();
