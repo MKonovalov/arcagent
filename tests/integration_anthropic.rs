@@ -16,6 +16,8 @@ fn api_key() -> String {
 
 fn make_config(provider: AnthropicProvider) -> AgentLoopConfig {
     AgentLoopConfig {
+        tool_choice: None,
+        stream: None,
         provider: std::sync::Arc::new(provider),
         model: "claude-sonnet-5".into(),
         api_key: api_key(),

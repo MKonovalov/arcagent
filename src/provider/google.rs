@@ -529,6 +529,8 @@ mod tests {
     #[test]
     fn thinking_level_sets_thinking_config() {
         let config = StreamConfig {
+            tool_choice: None,
+            stream: true,
             model: "gemini-2.5-pro".into(),
             system_prompt: "".into(),
             messages: vec![Message::user("hi")],
@@ -555,6 +557,8 @@ mod tests {
     #[test]
     fn thinking_off_omits_thinking_config() {
         let config = StreamConfig {
+            tool_choice: None,
+            stream: true,
             model: "gemini-2.5-pro".into(),
             system_prompt: "".into(),
             messages: vec![Message::user("hi")],
@@ -574,6 +578,8 @@ mod tests {
     #[test]
     fn structured_output_sets_response_schema() {
         let config = StreamConfig {
+            tool_choice: None,
+            stream: true,
             model: "gemini-2.5-pro".into(),
             system_prompt: "".into(),
             messages: vec![Message::user("Hello")],
@@ -603,6 +609,8 @@ mod tests {
     #[test]
     fn test_build_google_request() {
         let config = StreamConfig {
+            tool_choice: None,
+            stream: true,
             model: "gemini-2.0-flash".into(),
             system_prompt: "Be helpful".into(),
             messages: vec![Message::user("Hello")],
@@ -787,6 +795,8 @@ mod tests {
     #[test]
     fn test_function_response_includes_id() {
         let config = StreamConfig {
+            tool_choice: None,
+            stream: true,
             model: "gemini-2.5-flash".into(),
             system_prompt: "".into(),
             messages: vec![
@@ -833,6 +843,8 @@ mod tests {
     #[test]
     fn test_function_response_synthetic_id_omitted() {
         let config = StreamConfig {
+            tool_choice: None,
+            stream: true,
             model: "gemini-2.5-flash".into(),
             system_prompt: "".into(),
             messages: vec![

@@ -63,6 +63,8 @@ impl AgentTool for EchoTool {
 
 fn loop_config(provider: MockProvider) -> arcagent::agent_loop::AgentLoopConfig {
     arcagent::agent_loop::AgentLoopConfig {
+        tool_choice: None,
+        stream: None,
         provider: std::sync::Arc::new(provider),
         model: "mock".into(),
         api_key: "test".into(),

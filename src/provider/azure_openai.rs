@@ -398,6 +398,8 @@ mod tests {
 
     fn config(level: ThinkingLevel) -> StreamConfig {
         StreamConfig {
+            tool_choice: None,
+            stream: true,
             model: "gpt-5.5".into(),
             system_prompt: "".into(),
             messages: vec![Message::user("hi")],

@@ -1096,7 +1096,7 @@ impl Agent {
             temperature: self.temperature,
             model_config: self.model_config.clone(),
             tool_choice: self.tool_choice.clone(),
-            stream: self.stream.clone(),
+            stream: self.stream,
             convert_to_llm: None,
             transform_context: None,
             get_steering_messages: Some(Box::new(move || {

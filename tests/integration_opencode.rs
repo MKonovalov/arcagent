@@ -18,6 +18,8 @@ fn make_config(
     model_config: ModelConfig,
 ) -> AgentLoopConfig {
     AgentLoopConfig {
+        tool_choice: None,
+        stream: None,
         provider,
         model: model_config.id.clone(),
         api_key: api_key(),

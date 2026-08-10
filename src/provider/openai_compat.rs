@@ -470,7 +470,10 @@ async fn stream_nonstreaming(
     tx: mpsc::UnboundedSender<StreamEvent>,
 ) -> Result<Message, ProviderError> {
     let _ = tx.send(StreamEvent::Start);
-    let resp = request.send().await.map_err(|e| ProviderError::Network(e.to_string()))?;
+    let resp = request
+        .send()
+        .await
+        .map_err(|e| ProviderError::Network(e.to_string()))?;
     if !resp.status().is_success() {
         let status = resp.status().as_u16();
         let body = resp.text().await.unwrap_or_default();
@@ -485,36 +488,81 @@ async fn stream_nonstreaming(
     let mut stop_reason = StopReason::Stop;
     if let Some(u) = value.get("usage") {
         usage.input = u.get("prompt_tokens").and_then(|v| v.as_u64()).unwrap_or(0);
-        usage.output = u.get("completion_tokens").and_then(|v| v.as_u64()).unwrap_or(0);
+        usage.output = u
+            .get("completion_tokens")
+            .and_then(|v| v.as_u64())
+            .unwrap_or(0);
         usage.total_tokens = u.get("total_tokens").and_then(|v| v.as_u64()).unwrap_or(0);
     }
-    let choice = value.get("choices").and_then(|c| c.get(0)).and_then(|c| c.get("message"))
+    let choice = value
+        .get("choices")
+        .and_then(|c| c.get(0))
+        .and_then(|c| c.get("message"))
         .ok_or_else(|| ProviderError::Other("missing choices[0].message".into()))?;
     if let Some(text) = choice.get("content").and_then(|v| v.as_str()) {
         if !text.is_empty() {
-            content.push(Content::Text { text: text.to_string() });
-            let _ = tx.send(StreamEvent::TextDelta { content_index: content.len() - 1, delta: text.to_string() });
+            content.push(Content::Text {
+                text: text.to_string(),
+            });
+            let _ = tx.send(StreamEvent::TextDelta {
+                content_index: content.len() - 1,
+                delta: text.to_string(),
+            });
         }
     }
     if let Some(tool_calls) = choice.get("tool_calls").and_then(|v| v.as_array()) {
         for (i, tc) in tool_calls.iter().enumerate() {
-            let id = tc.get("id").and_then(|v| v.as_str()).unwrap_or("").to_string();
-            let func = tc.get("function").cloned().unwrap_or(serde_json::Value::Null);
-            let name = func.get("name").and_then(|v| v.as_str()).unwrap_or("").to_string();
-            let args = func.get("arguments").and_then(|v| v.as_str()).unwrap_or("").to_string();
+            let id = tc
+                .get("id")
+                .and_then(|v| v.as_str())
+                .unwrap_or("")
+                .to_string();
+            let func = tc
+                .get("function")
+                .cloned()
+                .unwrap_or(serde_json::Value::Null);
+            let name = func
+                .get("name")
+                .and_then(|v| v.as_str())
+                .unwrap_or("")
+                .to_string();
+            let args = func
+                .get("arguments")
+                .and_then(|v| v.as_str())
+                .unwrap_or("")
+                .to_string();
             if !name.is_empty() {
-                let _ = tx.send(StreamEvent::ToolCallStart { content_index: content.len() + i, id: id.clone(), name: name.clone() });
+                let _ = tx.send(StreamEvent::ToolCallStart {
+                    content_index: content.len() + i,
+                    id: id.clone(),
+                    name: name.clone(),
+                });
             }
             if !args.is_empty() {
-                let _ = tx.send(StreamEvent::ToolCallDelta { content_index: content.len() + i, delta: args.clone() });
+                let _ = tx.send(StreamEvent::ToolCallDelta {
+                    content_index: content.len() + i,
+                    delta: args.clone(),
+                });
             }
         }
         stop_reason = StopReason::ToolUse;
     }
     if let Some(reason) = choice.get("finish_reason").and_then(|v| v.as_str()) {
-        stop_reason = match reason { "tool_calls" => StopReason::ToolUse, "length" => StopReason::Length, _ => StopReason::Stop };
+        stop_reason = match reason {
+            "tool_calls" => StopReason::ToolUse,
+            "length" => StopReason::Length,
+            _ => StopReason::Stop,
+        };
     }
-    let message = Message::Assistant { content, stop_reason, model: config.model.clone(), provider: String::new(), usage, timestamp: 0, error_message: None };
+    let message = Message::Assistant {
+        content,
+        stop_reason,
+        model: config.model.clone(),
+        provider: String::new(),
+        usage,
+        timestamp: 0,
+        error_message: None,
+    };
     Ok(message)
 }
 
@@ -639,6 +687,8 @@ mod tests {
     fn structured_output_sets_json_schema_response_format() {
         let mc = ModelConfig::openai("gpt-5.5", "GPT-5.5");
         let config = StreamConfig {
+            tool_choice: None,
+            stream: true,
             model: "gpt-5.5".into(),
             system_prompt: "".into(),
             messages: vec![Message::user("Hello")],
@@ -671,6 +721,7 @@ mod tests {
     fn test_build_request_body_basic() {
         let model_config = ModelConfig::openai("gpt-4o", "GPT-4o");
         let config = StreamConfig {
+            stream: true,
             model: "gpt-4o".into(),
             system_prompt: "You are helpful.".into(),
             messages: vec![Message::user("Hello")],
@@ -700,6 +751,7 @@ mod tests {
         let model_config = ModelConfig::openai("gpt-4o", "GPT-4o");
         let compat = OpenAiCompat::openai();
         let config = StreamConfig {
+            stream: true,
             model: "gpt-4o".into(),
             system_prompt: String::new(),
             messages: vec![Message::user("List files")],
@@ -729,6 +781,7 @@ mod tests {
         let model_config = ModelConfig::deepseek("deepseek-v4-flash", "DeepSeek V4 Flash");
         let compat = model_config.compat.as_ref().unwrap().clone();
         let config = StreamConfig {
+            stream: true,
             model: "deepseek-v4-flash".into(),
             system_prompt: "You are helpful.".into(),
             messages: vec![Message::user("Hello")],
@@ -757,6 +810,7 @@ mod tests {
         let model_config = ModelConfig::deepseek("deepseek-v4-pro", "DeepSeek V4 Pro");
         let compat = model_config.compat.as_ref().unwrap().clone();
         let config = StreamConfig {
+            stream: true,
             model: "deepseek-v4-pro".into(),
             system_prompt: String::new(),
             messages: vec![Message::user("Solve this")],
@@ -782,6 +836,7 @@ mod tests {
         let model_config = ModelConfig::qwen("qwen3.6-plus", "Qwen 3.6 Plus");
         let compat = model_config.compat.as_ref().unwrap().clone();
         let config = StreamConfig {
+            stream: true,
             model: "qwen3.6-plus".into(),
             system_prompt: "You are helpful.".into(),
             messages: vec![Message::user("Hello")],
@@ -810,6 +865,7 @@ mod tests {
         let model_config = ModelConfig::qwen("qwen3-coder-plus", "Qwen 3 Coder Plus");
         let compat = model_config.compat.as_ref().unwrap().clone();
         let config = StreamConfig {
+            stream: true,
             model: "qwen3-coder-plus".into(),
             system_prompt: String::new(),
             messages: vec![Message::user("List files")],
@@ -920,6 +976,7 @@ mod tests {
         let model_config = ModelConfig::openai("gpt-4o", "GPT-4o");
         let compat = OpenAiCompat::openai();
         let config = StreamConfig {
+            stream: true,
             model: "gpt-4o".into(),
             system_prompt: String::new(),
             messages: vec![
@@ -978,6 +1035,7 @@ mod tests {
         let model_config = ModelConfig::openai("gpt-4o", "GPT-4o");
         let compat = OpenAiCompat::openai();
         let config = StreamConfig {
+            stream: true,
             model: "gpt-4o".into(),
             system_prompt: String::new(),
             messages: vec![Message::ToolResult {
@@ -1012,6 +1070,7 @@ mod tests {
         let model_config = ModelConfig::ollama("http://localhost:11434/v1", "llama3.1:8b");
         let compat = model_config.compat.as_ref().unwrap().clone();
         let config = StreamConfig {
+            stream: true,
             model: "llama3.1:8b".into(),
             system_prompt: String::new(),
             messages: vec![
@@ -1070,6 +1129,7 @@ mod tests {
         let model_config = ModelConfig::ollama("http://localhost:11434/v1", "qwen2.5-coder:7b");
         let compat = model_config.compat.as_ref().unwrap().clone();
         let config = StreamConfig {
+            stream: true,
             model: "qwen2.5-coder:7b".into(),
             system_prompt: String::new(),
             messages: vec![
@@ -1113,6 +1173,7 @@ mod tests {
         let model_config = ModelConfig::ollama("http://localhost:11434/v1", "llama3.1:8b");
         let compat = model_config.compat.as_ref().unwrap().clone();
         let config = StreamConfig {
+            stream: true,
             model: "llama3.1:8b".into(),
             system_prompt: String::new(),
             messages: vec![
@@ -1194,6 +1255,7 @@ mod tests {
             OpenAiCompat::openai(),
         );
         let config = StreamConfig {
+            stream: true,
             model: "tencent/hy3:free".into(),
             system_prompt: String::new(),
             messages: vec![Message::user("Hi")],
