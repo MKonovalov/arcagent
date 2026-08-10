@@ -62,6 +62,12 @@ pub struct StreamConfig {
     /// log a warning and ignore it.
     pub output_schema: Option<OutputSchema>,
     pub tool_choice: Option<String>,
+    /// Stream from the provider (`true`, default) or request a single
+    /// non-streamed JSON response (`false`). Some OpenAI-compatible
+    /// providers (e.g. tencent/hy3:free via nousresearch) emit tool-call
+    /// responses `reqwest-eventsource` cannot parse; non-streaming is the
+    /// reliable path for them.
+    pub stream: bool,
 }
 
 impl StreamConfig {
@@ -81,6 +87,7 @@ impl StreamConfig {
             cache_config: CacheConfig::default(),
             output_schema: None,
             tool_choice: None,
+            stream: true,
         }
     }
 }

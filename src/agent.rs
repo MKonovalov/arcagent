@@ -34,6 +34,7 @@ pub struct Agent {
     pub temperature: Option<f32>,
     model_config: Option<ModelConfig>,
     pub tool_choice: Option<String>,
+    pub stream: Option<bool>,
     messages: Vec<AgentMessage>,
     tools: Vec<Box<dyn AgentTool>>,
     provider: Arc<dyn StreamProvider>,
@@ -262,6 +263,7 @@ impl Agent {
             execution_limits: Some(ExecutionLimits::default()),
             cache_config: CacheConfig::default(),
             tool_choice: None,
+            stream: None,
             tool_execution: ToolExecutionStrategy::default(),
             retry_config: crate::retry::RetryConfig::default(),
             before_turn: None,
@@ -320,6 +322,11 @@ impl Agent {
 
     pub fn with_tool_choice(mut self, tc: Option<String>) -> Self {
         self.tool_choice = tc;
+        self
+    }
+
+    pub fn with_stream(mut self, s: Option<bool>) -> Self {
+        self.stream = s;
         self
     }
 
@@ -1089,6 +1096,7 @@ impl Agent {
             temperature: self.temperature,
             model_config: self.model_config.clone(),
             tool_choice: self.tool_choice.clone(),
+            stream: self.stream,
             convert_to_llm: None,
             transform_context: None,
             get_steering_messages: Some(Box::new(move || {

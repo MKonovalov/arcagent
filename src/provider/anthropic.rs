@@ -675,6 +675,8 @@ mod tests {
 
     fn make_config(cache: CacheConfig) -> StreamConfig {
         StreamConfig {
+            tool_choice: None,
+            stream: true,
             model: "claude-sonnet-4-20250514".into(),
             system_prompt: "You are helpful.".into(),
             messages: vec![
@@ -833,6 +835,8 @@ mod tests {
     #[test]
     fn test_tool_result_with_image() {
         let config = StreamConfig {
+            tool_choice: None,
+            stream: true,
             model: "claude-sonnet-4-20250514".into(),
             system_prompt: "".into(),
             messages: vec![
@@ -895,6 +899,8 @@ mod tests {
     #[test]
     fn test_tool_result_text_only_uses_string() {
         let config = StreamConfig {
+            tool_choice: None,
+            stream: true,
             model: "claude-sonnet-4-20250514".into(),
             system_prompt: "".into(),
             messages: vec![
@@ -959,6 +965,8 @@ mod tests {
     #[test]
     fn test_cache_control_not_set_on_empty_text_block() {
         let config = StreamConfig {
+            tool_choice: None,
+            stream: true,
             model: "claude-sonnet-4-20250514".into(),
             system_prompt: "You are helpful.".into(),
             messages: vec![
@@ -1014,6 +1022,8 @@ mod tests {
         // When the second-to-last message has only empty text blocks, the cache
         // breakpoint should scan backwards and land on an earlier non-empty message.
         let config = StreamConfig {
+            tool_choice: None,
+            stream: true,
             model: "claude-sonnet-4-20250514".into(),
             system_prompt: "You are helpful.".into(),
             messages: vec![

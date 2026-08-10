@@ -507,6 +507,8 @@ mod tests {
     #[test]
     fn thinking_level_sets_additional_model_request_fields() {
         let config = StreamConfig {
+            tool_choice: None,
+            stream: true,
             model: "anthropic.claude-sonnet".into(),
             system_prompt: "".into(),
             messages: vec![Message::user("hi")],
@@ -528,6 +530,8 @@ mod tests {
     #[test]
     fn thinking_off_omits_additional_fields() {
         let config = StreamConfig {
+            tool_choice: None,
+            stream: true,
             model: "anthropic.claude-sonnet".into(),
             system_prompt: "".into(),
             messages: vec![Message::user("hi")],
@@ -547,6 +551,8 @@ mod tests {
     #[test]
     fn test_build_bedrock_body() {
         let config = StreamConfig {
+            tool_choice: None,
+            stream: true,
             model: "anthropic.claude-3-sonnet-20240229-v1:0".into(),
             system_prompt: "Be helpful".into(),
             messages: vec![Message::user("Hello")],

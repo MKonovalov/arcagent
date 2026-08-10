@@ -10,6 +10,8 @@ use tokio_util::sync::CancellationToken;
 
 fn make_config(provider: MockProvider) -> AgentLoopConfig {
     AgentLoopConfig {
+        tool_choice: None,
+        stream: None,
         provider: std::sync::Arc::new(provider),
         model: "mock".into(),
         api_key: "test".into(),
@@ -749,6 +751,8 @@ async fn test_execution_limit_counts_cached_tokens() {
     let provider_for_config: std::sync::Arc<dyn StreamProvider> = provider.clone();
 
     let config = AgentLoopConfig {
+        tool_choice: None,
+        stream: None,
         provider: provider_for_config,
         model: "usage-test".into(),
         api_key: "test".into(),
@@ -853,6 +857,8 @@ async fn test_retry_on_rate_limit_succeeds() {
         });
 
     let config = AgentLoopConfig {
+        tool_choice: None,
+        stream: None,
         provider: provider.clone(),
         model: "mock".into(),
         api_key: "test".into(),
@@ -923,6 +929,8 @@ async fn test_retry_exhausted_returns_error() {
         });
 
     let config = AgentLoopConfig {
+        tool_choice: None,
+        stream: None,
         provider: provider.clone(),
         model: "mock".into(),
         api_key: "test".into(),
@@ -1000,6 +1008,8 @@ async fn test_no_retry_on_auth_error() {
         });
 
     let config = AgentLoopConfig {
+        tool_choice: None,
+        stream: None,
         provider: provider.clone(),
         model: "mock".into(),
         api_key: "test".into(),
@@ -1060,6 +1070,8 @@ async fn test_retry_none_disables_retries() {
         });
 
     let config = AgentLoopConfig {
+        tool_choice: None,
+        stream: None,
         provider: provider.clone(),
         model: "mock".into(),
         api_key: "test".into(),
@@ -1296,6 +1308,8 @@ async fn test_on_error_fires_on_provider_error() {
     let error_msgs_clone = error_msgs.clone();
 
     let config = AgentLoopConfig {
+        tool_choice: None,
+        stream: None,
         provider: std::sync::Arc::new(provider),
         model: "mock".into(),
         api_key: "test".into(),
@@ -1998,6 +2012,8 @@ async fn test_custom_compaction_strategy_is_called() {
     let provider = MockProvider::text("Got it.");
 
     let config = AgentLoopConfig {
+        tool_choice: None,
+        stream: None,
         provider: std::sync::Arc::new(provider),
         model: "test".into(),
         api_key: "test".into(),
@@ -2076,6 +2092,8 @@ async fn test_none_compaction_strategy_uses_default() {
     let provider = MockProvider::text("Got it.");
 
     let config = AgentLoopConfig {
+        tool_choice: None,
+        stream: None,
         provider: std::sync::Arc::new(provider),
         model: "test".into(),
         api_key: "test".into(),
@@ -2252,6 +2270,8 @@ fn calibration_config(
     max_context_tokens: usize,
 ) -> AgentLoopConfig {
     AgentLoopConfig {
+        tool_choice: None,
+        stream: None,
         provider,
         model: "usage-test".into(),
         api_key: "test".into(),

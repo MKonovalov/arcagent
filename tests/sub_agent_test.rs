@@ -12,6 +12,8 @@ use tokio_util::sync::CancellationToken;
 
 fn make_config(provider: MockProvider) -> AgentLoopConfig {
     AgentLoopConfig {
+        tool_choice: None,
+        stream: None,
         provider: std::sync::Arc::new(provider),
         model: "mock".into(),
         api_key: "test".into(),

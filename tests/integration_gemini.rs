@@ -15,6 +15,8 @@ fn api_key() -> String {
 fn make_config(model: &str) -> AgentLoopConfig {
     let model_config = ModelConfig::google(model, model);
     AgentLoopConfig {
+        tool_choice: None,
+        stream: None,
         provider: std::sync::Arc::new(GoogleProvider),
         model: model.into(),
         api_key: api_key(),

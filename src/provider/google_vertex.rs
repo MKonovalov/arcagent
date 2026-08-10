@@ -456,6 +456,8 @@ mod tests {
 
     fn config(level: ThinkingLevel) -> StreamConfig {
         StreamConfig {
+            tool_choice: None,
+            stream: true,
             model: "gemini-2.5-pro".into(),
             system_prompt: "".into(),
             messages: vec![Message::user("hi")],
